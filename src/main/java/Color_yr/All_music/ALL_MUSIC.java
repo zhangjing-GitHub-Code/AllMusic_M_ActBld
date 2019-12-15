@@ -16,6 +16,7 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.Port;
 import java.net.URL;
+import java.util.Arrays;
 
 @Mod(modid = "all_music", version = "1.0.0", acceptedMinecraftVersions = "[1.9,)")
 public class ALL_MUSIC {
@@ -29,7 +30,7 @@ public class ALL_MUSIC {
     public void preload(final FMLPreInitializationEvent evt) {
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
-        (ALL_MUSIC.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel("allmusic")).register((Object) this);
+        (ALL_MUSIC.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel("allmusic:channel")).register(this);
         set(100);
     }
 
@@ -45,9 +46,9 @@ public class ALL_MUSIC {
         final Thread asyncThread = new Thread(() -> {
             final ByteBuf directBuf = evt.getPacket().payload();
             final int length = directBuf.readableBytes();
-            final byte[] array = new byte[length];
+            byte[] array = new byte[length];
             directBuf.getBytes(directBuf.readerIndex(), array);
-            String message = new String(array);
+            String message = new String(Arrays.copyOfRange(array, 1, array.length));
             if (message.equals("[Stop]")) {
                 ALL_MUSIC.this.stopPlaying();
             } else if (message.startsWith("[Play]")) {
