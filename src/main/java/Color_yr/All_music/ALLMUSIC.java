@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.Arrays;
 
 @Mod(modid = "all_music", version = "1.0.0", acceptedMinecraftVersions = "[1.9,)")
-public class ALL_MUSIC {
+public class ALLMUSIC {
     static final String MODID = "all_music";
     static final String VERSION = "1.0.0";
     private static FMLEventChannel channel;
@@ -30,14 +30,14 @@ public class ALL_MUSIC {
     public void preload(final FMLPreInitializationEvent evt) {
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
-        (ALL_MUSIC.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel("allmusic:channel")).register(this);
+        (ALLMUSIC.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel("allmusic:channel")).register(this);
         set(100);
     }
 
     @SubscribeEvent
     public void onServerQuit(final FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
-        if (ALL_MUSIC.nowPlaying != null && !ALL_MUSIC.nowPlaying.isComplete()) {
-            ALL_MUSIC.nowPlaying.close();
+        if (ALLMUSIC.nowPlaying != null && !ALLMUSIC.nowPlaying.isComplete()) {
+            ALLMUSIC.nowPlaying.close();
         }
     }
 
@@ -50,13 +50,13 @@ public class ALL_MUSIC {
             directBuf.getBytes(directBuf.readerIndex(), array);
             String message = new String(Arrays.copyOfRange(array, 1, array.length));
             if (message.equals("[Stop]")) {
-                ALL_MUSIC.this.stopPlaying();
+                ALLMUSIC.this.stopPlaying();
             } else if (message.startsWith("[Play]")) {
                 try {
                     if (nowPlaying != null && !nowPlaying.isComplete()) {
                         nowPlaying.close();
                     }
-                    ALL_MUSIC.nowURL = new URL(message.replace("[Play]", ""));
+                    ALLMUSIC.nowURL = new URL(message.replace("[Play]", ""));
                     nowPlaying = new Player(nowURL.openStream());
                     nowPlaying.play();
                 } catch (Exception e) {

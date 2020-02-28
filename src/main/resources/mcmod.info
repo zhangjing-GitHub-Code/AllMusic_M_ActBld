@@ -1,7 +1,7 @@
 [
 {
-  "modid": "skilluse",
-  "name": "SkillUse",
+  "modid": "allmusic",
+  "name": "ALLMUSIC",
   "description": "HeartAge_server_mod",
   "version": "${version}",
   "mcversion": "${mcversion}",
