@@ -3,18 +3,14 @@ package Color_yr.All_music;
 import io.netty.buffer.ByteBuf;
 import javazoom.jl.player.Player;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLEventChannel;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import org.apache.logging.log4j.Logger;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.Mixer;
-import javax.sound.sampled.Port;
 import java.net.URL;
 import java.util.Arrays;
 
@@ -22,42 +18,39 @@ import java.util.Arrays;
 public class ALLMUSIC {
     static final String MODID = "all_music";
     static final String VERSION = "1.0.0";
+    public static Logger logger;
     private static FMLEventChannel channel;
-    private static Player nowPlaying;
+    private static Player nowPlaying = new Player();
     private static URL nowURL;
 
     @Mod.EventHandler
     public void preload(final FMLPreInitializationEvent evt) {
+        logger = evt.getModLog();
         MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance().bus().register(this);
         (ALLMUSIC.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel("allmusic:channel")).register(this);
         set(100);
     }
 
     @SubscribeEvent
     public void onServerQuit(final FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
-        if (ALLMUSIC.nowPlaying != null && !ALLMUSIC.nowPlaying.isComplete()) {
-            ALLMUSIC.nowPlaying.close();
-        }
+        stopPlaying();
     }
 
     @SubscribeEvent
     public void onClicentPacket(final FMLNetworkEvent.ClientCustomPacketEvent evt) {
-        final Thread asyncThread = new Thread(() -> {
+        new Thread(() -> {
             final ByteBuf directBuf = evt.getPacket().payload();
             final int length = directBuf.readableBytes();
             byte[] array = new byte[length];
             directBuf.getBytes(directBuf.readerIndex(), array);
             String message = new String(Arrays.copyOfRange(array, 1, array.length));
             if (message.equals("[Stop]")) {
-                ALLMUSIC.this.stopPlaying();
+                stopPlaying();
             } else if (message.startsWith("[Play]")) {
                 try {
-                    if (nowPlaying != null && !nowPlaying.isComplete()) {
-                        nowPlaying.close();
-                    }
                     ALLMUSIC.nowURL = new URL(message.replace("[Play]", ""));
-                    nowPlaying = new Player(nowURL.openStream());
+                    stopPlaying();
+                    nowPlaying.SetMusic(ALLMUSIC.nowURL.openStream());
                     nowPlaying.play();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -70,32 +63,17 @@ public class ALLMUSIC {
                     e.printStackTrace();
                 }
             }
-        });
-        asyncThread.start();
+        }).start();
     }
 
     private void stopPlaying() {
-        if (nowPlaying != null) {
-            nowPlaying.close();
-            nowPlaying = null;
-        }
+        nowPlaying.close();
     }
 
     private void set(int a) {
         try {
-            final Mixer.Info[] mixerInfo = AudioSystem.getMixerInfo();
-            for (final Mixer.Info info : mixerInfo) {
-                final Mixer mixer = AudioSystem.getMixer(info);
-                if (mixer.isLineSupported(Port.Info.SPEAKER)) {
-                    final Port port = (Port) mixer.getLine(Port.Info.SPEAKER);
-                    port.open();
-                    if (port.isControlSupported(FloatControl.Type.VOLUME)) {
-                        final FloatControl volume = (FloatControl) port.getControl(FloatControl.Type.VOLUME);
-                        volume.setValue((float) a / 1000);
-                    }
-                    port.close();
-                }
-            }
+            float temp = a == 0 ? -80F : (float) (((float) a * 0.2) - 20F);
+            nowPlaying.Set(temp);
         } catch (Exception e) {
             e.printStackTrace();
         }
