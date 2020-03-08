@@ -10,10 +10,6 @@ import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.api.ModInitializer;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.Mixer;
-import javax.sound.sampled.Port;
 import java.net.URL;
 
 public class ALLMusic_mod implements ModInitializer {
@@ -45,9 +41,7 @@ public class ALLMusic_mod implements ModInitializer {
     }
 
     public static void onServerQuit() {
-        if (nowPlaying != null && !nowPlaying.isComplete()) {
-            nowPlaying.close();
-        }
+        stopPlaying();
     }
 
     public static void onClicentPacket(final String message) {
@@ -56,11 +50,9 @@ public class ALLMusic_mod implements ModInitializer {
                 stopPlaying();
             } else if (message.startsWith("[Play]")) {
                 try {
-                    if (nowPlaying != null && !nowPlaying.isComplete()) {
-                        nowPlaying.close();
-                    }
+                    stopPlaying();
                     nowURL = new URL(message.replace("[Play]", ""));
-                    nowPlaying = new Player(nowURL.openStream());
+                    nowPlaying .SetMusic(nowURL.openStream());
                     nowPlaying.play();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -78,27 +70,13 @@ public class ALLMusic_mod implements ModInitializer {
     }
 
     private static void stopPlaying() {
-        if (nowPlaying != null) {
-            nowPlaying.close();
-            nowPlaying = null;
-        }
+        nowPlaying.close();
     }
 
     private static void set(int a) {
         try {
-            final Mixer.Info[] mixerInfo = AudioSystem.getMixerInfo();
-            for (final Mixer.Info info : mixerInfo) {
-                final Mixer mixer = AudioSystem.getMixer(info);
-                if (mixer.isLineSupported(Port.Info.SPEAKER)) {
-                    final Port port = (Port) mixer.getLine(Port.Info.SPEAKER);
-                    port.open();
-                    if (port.isControlSupported(FloatControl.Type.VOLUME)) {
-                        final FloatControl volume = (FloatControl) port.getControl(FloatControl.Type.VOLUME);
-                        volume.setValue((float) a / 1000);
-                    }
-                    port.close();
-                }
-            }
+            float temp = (a == 0) ? -80.0f : ((float)(a * 0.2 - 20.0));
+            nowPlaying.Set(temp);
         } catch (Exception e) {
             e.printStackTrace();
         }
