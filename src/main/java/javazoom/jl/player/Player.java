@@ -44,22 +44,21 @@ public class Player {
 
     public Player() {
         try {
-
+            FactoryRegistry r = FactoryRegistry.systemRegistry();
+            audio = r.createAudioDevice();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void SetMusic(InputStream stream) throws JavaLayerException {
+    public synchronized void SetMusic(InputStream stream) throws JavaLayerException {
         bitstream = new Bitstream(stream);
         decoder = new Decoder();
-        FactoryRegistry r = FactoryRegistry.systemRegistry();
-        audio = r.createAudioDevice();
         audio.open(decoder);
         isClose = false;
     }
 
-    public void Set(float a) {
+    public synchronized void Set(float a) {
         if (audio == null)
             return;
         FloatControl temp = audio.getVolctrl();
@@ -75,9 +74,8 @@ public class Player {
             ret = decodeFrame();
         }
 
-        AudioDevice out = audio;
-        if (out != null) {
-            out.flush();
+        if (audio != null) {
+            audio.flush();
             synchronized (this) {
                 close();
             }
@@ -87,8 +85,6 @@ public class Player {
     public synchronized void close() {
         try {
             isClose = true;
-            if (audio != null)
-                audio.close();
             if (bitstream != null)
                 bitstream.close();
         } catch (BitstreamException ex) {
@@ -99,7 +95,8 @@ public class Player {
         try {
             if (audio == null)
                 return false;
-
+            if (isClose)
+                return false;
             Header h = bitstream.readFrame();
 
             if (h == null)

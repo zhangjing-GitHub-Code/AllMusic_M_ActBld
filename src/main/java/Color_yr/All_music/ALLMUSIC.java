@@ -14,10 +14,10 @@ import org.apache.logging.log4j.Logger;
 import java.net.URL;
 import java.util.Arrays;
 
-@Mod(modid = "all_music", version = "1.0.0", acceptedMinecraftVersions = "[1.9,)")
+@Mod(modid = ALLMUSIC.MODID, version = ALLMUSIC.VERSION, acceptedMinecraftVersions = "[1.9,)")
 public class ALLMUSIC {
-    static final String MODID = "all_music";
-    static final String VERSION = "1.0.0";
+    static final String MODID = "allmusic";
+    static final String VERSION = "1.1.0";
     public static Logger logger;
     private static FMLEventChannel channel;
     private static Player nowPlaying = new Player();
@@ -28,7 +28,6 @@ public class ALLMUSIC {
         logger = evt.getModLog();
         MinecraftForge.EVENT_BUS.register(this);
         (ALLMUSIC.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel("allmusic:channel")).register(this);
-        set(100);
     }
 
     @SubscribeEvent
