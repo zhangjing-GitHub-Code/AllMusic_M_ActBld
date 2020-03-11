@@ -17,7 +17,7 @@ public class ALLMusic_mod implements ModInitializer {
 
     public static final Identifier ID = new Identifier(ALLMusic_mod.modID, ALLMusic_mod.channel);
 
-    private static Player nowPlaying;
+    private static final Player nowPlaying = new Player();
     private static URL nowURL;
 
     public static final String modID  = "allmusic";
@@ -52,7 +52,7 @@ public class ALLMusic_mod implements ModInitializer {
                 try {
                     stopPlaying();
                     nowURL = new URL(message.replace("[Play]", ""));
-                    nowPlaying .SetMusic(nowURL.openStream());
+                    nowPlaying.SetMusic(nowURL.openStream());
                     nowPlaying.play();
                 } catch (Exception e) {
                     e.printStackTrace();
