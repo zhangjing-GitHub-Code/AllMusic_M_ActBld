@@ -36,7 +36,6 @@ public class ALLMusic_mod implements ModInitializer {
 
     @Override
 	public void onInitialize() {
-        set(100);
         registerPacket(ID, GetPack.class);
     }
 
