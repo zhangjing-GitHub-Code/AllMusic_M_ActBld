@@ -67,10 +67,10 @@ public class ALLMUSIC {
     public void onClicentPacket(final FMLNetworkEvent.ClientCustomPacketEvent evt) {
         new Thread(() -> {
             final ByteBuf directBuf = evt.getPacket().payload();
-            final int length = directBuf.readableBytes();
-            byte[] array = new byte[length];
+            byte[] array = new byte[directBuf.readableBytes()];
             directBuf.getBytes(directBuf.readerIndex(), array);
-            String message = new String(array);
+            array[0] = 0;
+            String message = new String(array).substring(1);
             if (message.equalsIgnoreCase("[Check]")) {
                 Send("666");
             } else if (message.equals("[Stop]")) {
