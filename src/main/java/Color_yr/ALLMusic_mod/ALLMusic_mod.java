@@ -2,9 +2,13 @@ package Color_yr.ALLMusic_mod;
 
 import Color_yr.ALLMusic_mod.Pack.GetPack;
 import Color_yr.ALLMusic_mod.Pack.IPacket;
+import io.netty.buffer.Unpooled;
 import javazoom.jl.player.*;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,14 +18,33 @@ import java.net.URL;
 
 public class ALLMusic_mod implements ModInitializer {
     public static final Logger LOGGER = LogManager.getLogger();
-
+    public static final String modID = "allmusic";
+    public static final String channel = "channel";
     public static final Identifier ID = new Identifier(ALLMusic_mod.modID, ALLMusic_mod.channel);
 
     private static final Player nowPlaying = new Player();
     private static URL nowURL;
 
-    public static final String modID  = "allmusic";
-    public static final String channel = "channel";
+    public final Thread thread = new Thread(() -> {
+        while (true) {
+            try {
+                if(MinecraftClient.getInstance().options!=null) {
+                    int nowV = (int) (MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.RECORDS) *
+                            MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.MASTER) * 100);
+                    nowPlaying.Set(nowV);
+                }
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    });
+
+    public static void Send(String s) {
+        PacketByteBuf PacketByteBuf = new PacketByteBuf(Unpooled.buffer());
+        PacketByteBuf.writeString(s);
+        ClientSidePacketRegistry.INSTANCE.sendToServer(ID, PacketByteBuf);
+    }
 
     public static <T extends IPacket> void registerPacket(Identifier id, Class<T> packetClass) {
         ClientSidePacketRegistry.INSTANCE.register(id, (context, buffer) -> {
@@ -35,8 +58,9 @@ public class ALLMusic_mod implements ModInitializer {
     }
 
     @Override
-	public void onInitialize() {
+    public void onInitialize() {
         registerPacket(ID, GetPack.class);
+        thread.start();
     }
 
     public static void onServerQuit() {
@@ -45,7 +69,9 @@ public class ALLMusic_mod implements ModInitializer {
 
     public static void onClicentPacket(final String message) {
         final Thread asyncThread = new Thread(() -> {
-            if (message.equals("[Stop]")) {
+            if (message.equalsIgnoreCase("[Check]")) {
+                Send("666");
+            } else if (message.equals("[Stop]")) {
                 stopPlaying();
             } else if (message.startsWith("[Play]")) {
                 try {
@@ -56,13 +82,6 @@ public class ALLMusic_mod implements ModInitializer {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (message.startsWith("[V]")) {
-                try {
-                    String a = message.replace("[V]", "");
-                    set(Integer.parseInt(a));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
         });
         asyncThread.start();
@@ -70,14 +89,5 @@ public class ALLMusic_mod implements ModInitializer {
 
     private static void stopPlaying() {
         nowPlaying.close();
-    }
-
-    private static void set(int a) {
-        try {
-            float temp = (a == 0) ? -80.0f : ((float)(a * 0.2 - 20.0));
-            nowPlaying.Set(temp);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
