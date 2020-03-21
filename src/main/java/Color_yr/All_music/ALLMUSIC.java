@@ -55,7 +55,6 @@ public class ALLMUSIC {
         MinecraftForge.EVENT_BUS.register(this);
         thread.start();
         (ALLMUSIC.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(channelName)).register(this);
-        nowV = -8;
     }
 
     @SubscribeEvent
@@ -72,6 +71,11 @@ public class ALLMUSIC {
             array[0] = 0;
             String message = new String(array).substring(1);
             if (message.equalsIgnoreCase("[Check]")) {
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 Send("666");
             } else if (message.equals("[Stop]")) {
                 stopPlaying();
