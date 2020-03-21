@@ -36,7 +36,7 @@ public class ALLMUSIC {
                 nowV = (int) (Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS) *
                         Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MASTER) * 100);
                 nowPlaying.Set(nowV);
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -81,6 +81,8 @@ public class ALLMUSIC {
                 stopPlaying();
             } else if (message.startsWith("[Play]")) {
                 try {
+                    Minecraft.getMinecraft().getSoundHandler().stop("", SoundCategory.MUSIC);
+                    Minecraft.getMinecraft().getSoundHandler().stop("", SoundCategory.RECORDS);
                     ALLMUSIC.nowURL = new URL(message.replace("[Play]", ""));
                     stopPlaying();
                     nowPlaying.SetMusic(ALLMUSIC.nowURL.openStream());
