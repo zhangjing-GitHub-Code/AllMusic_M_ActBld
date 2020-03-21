@@ -41,6 +41,13 @@ public class ALLMusic_mod implements ModInitializer {
     });
 
     public static void Send(String s) {
+        try {
+            Thread.sleep(1000);
+        }
+        catch (Exception e)
+        {
+
+        }
         PacketByteBuf PacketByteBuf = new PacketByteBuf(Unpooled.buffer());
         PacketByteBuf.writeString(s);
         ClientSidePacketRegistry.INSTANCE.sendToServer(ID, PacketByteBuf);
