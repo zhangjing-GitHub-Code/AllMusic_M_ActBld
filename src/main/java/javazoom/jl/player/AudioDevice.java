@@ -43,8 +43,8 @@ import javax.sound.sampled.FloatControl;
  *  r<i>x</i> indicates the <i>x</i>th sample on channel 1
  * </code></pre>
  *
- * @since 0.0.8
  * @author Mat McGowan
+ * @since 0.0.8
  */
 public interface AudioDevice {
     /**

@@ -20,6 +20,7 @@
 
 package javazoom.jl.player;
 
+import Color_yr.All_music.ALLMUSIC;
 import javazoom.jl.decoder.*;
 
 import javax.sound.sampled.FloatControl;
@@ -65,12 +66,13 @@ public class Player {
         if (temp != null) {
             float temp1 = a == 0 ? -80F : (float) (((float) a * 0.2) - 35F);
             temp.setValue(temp1);
+            ALLMUSIC.v = a;
         }
     }
 
     public void play() {
         boolean ret = true;
-
+        ALLMUSIC.isPlay = true;
         while (ret) {
             ret = decodeFrame();
         }
@@ -88,6 +90,7 @@ public class Player {
             isClose = true;
             if (bitstream != null)
                 bitstream.close();
+            ALLMUSIC.isPlay = false;
         } catch (BitstreamException ex) {
         }
     }
