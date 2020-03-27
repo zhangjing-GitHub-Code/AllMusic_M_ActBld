@@ -6,7 +6,8 @@
   "mixins": [
   ],
   "client": [
-    "QuitServer"
+    "QuitServer",
+    "SoundEvent"
   ],
   "injectors": {
     "defaultRequire": 1

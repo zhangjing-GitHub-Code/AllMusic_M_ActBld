@@ -2,13 +2,11 @@ package Color_yr.ALLMusic_mod;
 
 import Color_yr.ALLMusic_mod.Pack.GetPack;
 import Color_yr.ALLMusic_mod.Pack.IPacket;
-import io.netty.buffer.Unpooled;
 import javazoom.jl.player.*;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,9 +16,9 @@ import java.net.URL;
 
 public class ALLMusic_mod implements ModInitializer {
     public static final Logger LOGGER = LogManager.getLogger();
-    public static final String modID = "allmusic";
-    public static final String channel = "channel";
-    public static final Identifier ID = new Identifier(ALLMusic_mod.modID, ALLMusic_mod.channel);
+    public static final Identifier ID = new Identifier("allmusic", "channel");
+    public static boolean isPlay = false;
+    public static int v = 0;
 
     private static final Player nowPlaying = new Player();
     private static URL nowURL;
@@ -28,30 +26,19 @@ public class ALLMusic_mod implements ModInitializer {
     public final Thread thread = new Thread(() -> {
         while (true) {
             try {
-                if(MinecraftClient.getInstance().options!=null) {
+                if (MinecraftClient.getInstance().options != null) {
                     int nowV = (int) (MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.RECORDS) *
-                            MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.MASTER) * 100);
-                    nowPlaying.Set(nowV);
+                            MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.MASTER)* 100);
+                    if (v != nowV) {
+                        nowPlaying.Set(nowV);
+                    }
                 }
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     });
-
-    public static void Send(String s) {
-        try {
-            Thread.sleep(1000);
-        }
-        catch (Exception e)
-        {
-
-        }
-        PacketByteBuf PacketByteBuf = new PacketByteBuf(Unpooled.buffer());
-        PacketByteBuf.writeString(s);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(ID, PacketByteBuf);
-    }
 
     public static <T extends IPacket> void registerPacket(Identifier id, Class<T> packetClass) {
         ClientSidePacketRegistry.INSTANCE.register(id, (context, buffer) -> {
@@ -76,9 +63,7 @@ public class ALLMusic_mod implements ModInitializer {
 
     public static void onClicentPacket(final String message) {
         final Thread asyncThread = new Thread(() -> {
-            if (message.equalsIgnoreCase("[Check]")) {
-                Send("666");
-            } else if (message.equals("[Stop]")) {
+            if (message.equals("[Stop]")) {
                 stopPlaying();
             } else if (message.startsWith("[Play]")) {
                 try {
