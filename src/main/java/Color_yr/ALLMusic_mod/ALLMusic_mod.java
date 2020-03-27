@@ -2,7 +2,8 @@ package Color_yr.ALLMusic_mod;
 
 import Color_yr.ALLMusic_mod.Pack.GetPack;
 import Color_yr.ALLMusic_mod.Pack.IPacket;
-import javazoom.jl.player.*;
+import javazoom.jl.player.Player;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.sound.SoundCategory;
@@ -10,17 +11,14 @@ import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.fabricmc.api.ModInitializer;
-
 import java.net.URL;
 
 public class ALLMusic_mod implements ModInitializer {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final Identifier ID = new Identifier("allmusic", "channel");
+    private static final Player nowPlaying = new Player();
     public static boolean isPlay = false;
     public static int v = 0;
-
-    private static final Player nowPlaying = new Player();
     private static URL nowURL;
 
     public final Thread thread = new Thread(() -> {
@@ -28,7 +26,7 @@ public class ALLMusic_mod implements ModInitializer {
             try {
                 if (MinecraftClient.getInstance().options != null) {
                     int nowV = (int) (MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.RECORDS) *
-                            MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.MASTER)* 100);
+                            MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.MASTER) * 100);
                     if (v != nowV) {
                         nowPlaying.Set(nowV);
                     }
@@ -51,12 +49,6 @@ public class ALLMusic_mod implements ModInitializer {
         });
     }
 
-    @Override
-    public void onInitialize() {
-        registerPacket(ID, GetPack.class);
-        thread.start();
-    }
-
     public static void onServerQuit() {
         stopPlaying();
     }
@@ -67,6 +59,8 @@ public class ALLMusic_mod implements ModInitializer {
                 stopPlaying();
             } else if (message.startsWith("[Play]")) {
                 try {
+                    MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.MUSIC);
+                    MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.RECORDS);
                     stopPlaying();
                     nowURL = new URL(message.replace("[Play]", ""));
                     nowPlaying.SetMusic(nowURL.openStream());
@@ -81,5 +75,11 @@ public class ALLMusic_mod implements ModInitializer {
 
     private static void stopPlaying() {
         nowPlaying.close();
+    }
+
+    @Override
+    public void onInitialize() {
+        registerPacket(ID, GetPack.class);
+        thread.start();
     }
 }
