@@ -15,7 +15,7 @@ public class ALLMusic_mod implements ModInitializer {
     public static final Identifier ID = new Identifier("allmusic", "channel");
     private static final Player nowPlaying = new Player();
     public static boolean isPlay = false;
-    public static int v = 0;
+    public static int v = -1;
     private static URL nowURL;
 
     public final Thread thread = new Thread(() -> {
