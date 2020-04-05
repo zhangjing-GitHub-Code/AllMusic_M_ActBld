@@ -1,7 +1,7 @@
 package Color_yr.All_music;
 
 import io.netty.buffer.ByteBuf;
-import javazoom.jl.player.Player;
+import javazoom.jl.player.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
@@ -18,7 +18,7 @@ import java.net.URL;
 public class ALLMUSIC {
     static final String MODID = "allmusic";
     static final String VERSION = "1.3.0";
-    public static int v;
+    public static int v = -1;
     public static boolean isPlay = false;
     private final Player nowPlaying = new Player();
 
@@ -30,7 +30,7 @@ public class ALLMUSIC {
                 if (v != nowV) {
                     nowPlaying.Set(nowV);
                 }
-                Thread.sleep(500);
+                Thread.sleep(100);
             } catch (Exception e) {
                 e.printStackTrace();
             }
