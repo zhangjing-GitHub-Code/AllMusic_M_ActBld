@@ -36,10 +36,11 @@ import javax.sound.sampled.*;
  * @author Mat McGowan
  * @since 0.0.8
  */
-public class JavaSoundAudioDevice extends AudioDeviceBase {
+public class JavaSoundAudioDevice {
     private SourceDataLine source = null;
-
-    private AudioFormat fmt = null;
+    private boolean open = false;
+    private Decoder decoder = null;
+    private AudioFormatSelf fmt = null;
 
     private byte[] byteBuf = new byte[4096];
 
@@ -49,40 +50,62 @@ public class JavaSoundAudioDevice extends AudioDeviceBase {
         return volctrl;
     }
 
-    protected AudioFormat getAudioFormat() {
+    public synchronized void open(Decoder decoder) {
+        while (open) {
+           close();
+        }
+        this.decoder = decoder;
+        open = true;
+    }
+
+    public synchronized boolean isOpen() {
+        return open;
+    }
+
+    protected AudioFormatSelf getAudioFormat() {
         if (fmt == null) {
-            Decoder decoder = getDecoder();
-            fmt = new AudioFormat(decoder.getOutputFrequency(),
+            fmt = new AudioFormatSelf(decoder.getOutputFrequency(),
                     16,
                     decoder.getOutputChannels(),
                     true,
                     false);
+        } else {
+            fmt.setSampleRate(decoder.getOutputFrequency());
+            fmt.setChannels(decoder.getOutputChannels());
         }
         return fmt;
     }
 
-    protected void setAudioFormat(AudioFormat fmt0) {
-        fmt = fmt0;
+    public synchronized void close() {
+        if (open) {
+            open = false;
+        }
+        if (source != null)
+            source.close();
+        decoder = null;
+    }
+
+    public void write(short[] samples, int offs, int len)
+            throws JavaLayerException {
+        if (isOpen()) {
+            writeImpl(samples, offs, len);
+        }
+    }
+
+    public void flush() {
+        flushImpl();
+    }
+
+    protected void flushImpl() {
+        if (source != null) {
+            source.drain();
+        }
     }
 
     protected DataLine.Info getSourceLineInfo() {
         AudioFormat fmt = getAudioFormat();
-        //DataLine.Info info = new DataLine.Info(SourceDataLine.class, fmt, 4000);
         return new DataLine.Info(SourceDataLine.class, fmt);
     }
-
-    public void open(AudioFormat fmt) throws JavaLayerException {
-        if (!isOpen()) {
-            setAudioFormat(fmt);
-            openImpl();
-            setOpen(true);
-        }
-    }
-
-    protected void openImpl()
-            throws JavaLayerException {
-    }
-
 
     // createSource fix.
     protected void createSource() throws JavaLayerException {
@@ -99,16 +122,6 @@ public class JavaSoundAudioDevice extends AudioDeviceBase {
             t = ex;
         }
         if (source == null) throw new JavaLayerException("cannot obtain source audio line", t);
-    }
-
-    public int millisecondsToBytes(AudioFormat fmt, int time) {
-        return (int) (time * (fmt.getSampleRate() * fmt.getChannels() * fmt.getSampleSizeInBits()) / 8000.0);
-    }
-
-    protected void closeImpl() {
-        if (source != null) {
-            source.close();
-        }
     }
 
     protected void writeImpl(short[] samples, int offs, int len)
@@ -139,12 +152,6 @@ public class JavaSoundAudioDevice extends AudioDeviceBase {
         return b;
     }
 
-    protected void flushImpl() {
-        if (source != null) {
-            source.drain();
-        }
-    }
-
     public int getPosition() {
         int pos = 0;
         if (source != null) {
@@ -153,20 +160,4 @@ public class JavaSoundAudioDevice extends AudioDeviceBase {
         return pos;
     }
 
-    /**
-     * Runs a short test by playing a short silent sound.
-     */
-    public void test()
-            throws JavaLayerException {
-        try {
-            open(new AudioFormat(22050, 16, 1, true, false));
-            short[] data = new short[22050 / 10];
-            write(data, 0, data.length);
-            flush();
-            close();
-        } catch (RuntimeException ex) {
-            throw new JavaLayerException("Device test failed: " + ex);
-        }
-
-    }
 }
