@@ -37,6 +37,7 @@ import javax.sound.sampled.*;
  * @since 0.0.8
  */
 public class JavaSoundAudioDevice {
+    public boolean startplay = false;
     private SourceDataLine source = null;
     private boolean open = false;
     private Decoder decoder = null;
@@ -46,89 +47,62 @@ public class JavaSoundAudioDevice {
 
     private FloatControl volctrl;
 
+    public JavaSoundAudioDevice() {
+        try {
+            Throwable t = null;
+            try {
+                fmt = new AudioFormatSelf(48000,
+                        16,
+                        2,
+                        true,
+                        false);
+                source = (SourceDataLine) AudioSystem.getLine(new DataLine.Info(SourceDataLine.class, fmt));
+            } catch (RuntimeException | LinkageError | LineUnavailableException ex) {
+                t = ex;
+            }
+            if (source == null) throw new JavaLayerException("cannot obtain source audio line", t);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public FloatControl getVolctrl() {
         return volctrl;
     }
 
     public synchronized void open(Decoder decoder) {
-        while (open) {
-           close();
-        }
         this.decoder = decoder;
         open = true;
     }
 
-    public synchronized boolean isOpen() {
-        return open;
-    }
-
-    protected AudioFormatSelf getAudioFormat() {
-        if (fmt == null) {
-            fmt = new AudioFormatSelf(decoder.getOutputFrequency(),
-                    16,
-                    decoder.getOutputChannels(),
-                    true,
-                    false);
-        } else {
-            fmt.setSampleRate(decoder.getOutputFrequency());
-            fmt.setChannels(decoder.getOutputChannels());
-        }
-        return fmt;
-    }
-
     public synchronized void close() {
-        if (open) {
-            open = false;
-        }
-        if (source != null)
-            source.close();
+        flush();
         decoder = null;
+        open = false;
     }
 
-    public void write(short[] samples, int offs, int len)
-            throws JavaLayerException {
-        if (isOpen()) {
+    public void write(short[] samples, int offs, int len) throws LineUnavailableException {
+        if (open) {
             writeImpl(samples, offs, len);
         }
     }
 
     public void flush() {
-        flushImpl();
-    }
-
-    protected void flushImpl() {
         if (source != null) {
-            source.drain();
+            source.close();
+            startplay = false;
         }
     }
 
-    protected DataLine.Info getSourceLineInfo() {
-        AudioFormat fmt = getAudioFormat();
-        return new DataLine.Info(SourceDataLine.class, fmt);
-    }
-
-    // createSource fix.
-    protected void createSource() throws JavaLayerException {
-        Throwable t = null;
-        try {
-            Line line = AudioSystem.getLine(getSourceLineInfo());
-            if (line instanceof SourceDataLine) {
-                source = (SourceDataLine) line;
-                source.open(fmt);
-                source.start();
-                volctrl = (FloatControl) source.getControl(FloatControl.Type.MASTER_GAIN);
-            }
-        } catch (RuntimeException | LinkageError | LineUnavailableException ex) {
-            t = ex;
+    protected void writeImpl(short[] samples, int offs, int len) throws LineUnavailableException {
+        if (!startplay) {
+            fmt.setSampleRate(decoder.getOutputFrequency());
+            fmt.setChannels(decoder.getOutputChannels());
+            source.open(fmt);
+            source.start();
+            volctrl = (FloatControl) source.getControl(FloatControl.Type.MASTER_GAIN);
+            startplay = true;
         }
-        if (source == null) throw new JavaLayerException("cannot obtain source audio line", t);
-    }
-
-    protected void writeImpl(short[] samples, int offs, int len)
-            throws JavaLayerException {
-        if (source == null)
-            createSource();
-
         byte[] b = toByteArray(samples, offs, len);
         source.write(b, 0, len * 2);
     }
@@ -151,13 +125,4 @@ public class JavaSoundAudioDevice {
         }
         return b;
     }
-
-    public int getPosition() {
-        int pos = 0;
-        if (source != null) {
-            pos = (int) (source.getMicrosecondPosition() / 1000);
-        }
-        return pos;
-    }
-
 }

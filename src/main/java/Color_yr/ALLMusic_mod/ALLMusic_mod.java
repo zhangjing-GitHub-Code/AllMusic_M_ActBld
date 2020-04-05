@@ -8,13 +8,10 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.net.URL;
 
 public class ALLMusic_mod implements ModInitializer {
-    public static final Logger LOGGER = LogManager.getLogger();
     public static final Identifier ID = new Identifier("allmusic", "channel");
     private static final Player nowPlaying = new Player();
     public static boolean isPlay = false;
@@ -31,7 +28,7 @@ public class ALLMusic_mod implements ModInitializer {
                         nowPlaying.Set(nowV);
                     }
                 }
-                Thread.sleep(500);
+                Thread.sleep(100);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -44,7 +41,7 @@ public class ALLMusic_mod implements ModInitializer {
                 IPacket packet = packetClass.newInstance();
                 packet.read(buffer);
             } catch (Exception e) {
-                LOGGER.warn(e.getMessage(), e);
+                e.printStackTrace();
             }
         });
     }

@@ -77,7 +77,6 @@ public class Player {
         }
 
         if (audio != null) {
-            audio.flush();
             synchronized (this) {
                 close();
             }
