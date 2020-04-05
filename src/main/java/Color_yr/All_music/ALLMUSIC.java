@@ -17,7 +17,7 @@ import java.net.URL;
 @Mod(modid = ALLMUSIC.MODID, version = ALLMUSIC.VERSION, acceptedMinecraftVersions = "[1.9,)")
 public class ALLMUSIC {
     static final String MODID = "allmusic";
-    static final String VERSION = "1.3.0";
+    static final String VERSION = "1.4.0";
     public static int v = -1;
     public static boolean isPlay = false;
     private final Player nowPlaying = new Player();
