@@ -3,9 +3,8 @@
   "minVersion": "0.8",
   "package": "Color_yr.ALLMusic_mod.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-  ],
   "client": [
+    "GuiShow",
     "QuitServer",
     "SoundEvent"
   ],

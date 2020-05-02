@@ -1,5 +1,6 @@
 package Color_yr.ALLMusic_mod;
 
+import Color_yr.ALLMusic_mod.Hud.Hud;
 import Color_yr.ALLMusic_mod.Pack.GetPack;
 import Color_yr.ALLMusic_mod.Pack.IPacket;
 import javazoom.jl.player.Player;
@@ -48,23 +49,34 @@ public class ALLMusic_mod implements ModInitializer {
 
     public static void onServerQuit() {
         stopPlaying();
+        Hud.Lyric = Hud.Info = Hud.List = "";
     }
 
     public static void onClicentPacket(final String message) {
         final Thread asyncThread = new Thread(() -> {
-            if (message.equals("[Stop]")) {
-                stopPlaying();
-            } else if (message.startsWith("[Play]")) {
-                try {
+            try {
+                if (message.equals("[Stop]")) {
+                    stopPlaying();
+                } else if (message.startsWith("[Play]")) {
                     MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.MUSIC);
                     MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.RECORDS);
                     stopPlaying();
                     nowURL = new URL(message.replace("[Play]", ""));
                     nowPlaying.SetMusic(nowURL.openStream());
                     nowPlaying.play();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else if (message.startsWith("[Lyric]")) {
+                    Hud.Lyric = message.substring(7);
+                } else if (message.startsWith("[Info]")) {
+                    Hud.Info = message.substring(6);
+                } else if (message.startsWith("[List]")) {
+                    Hud.List = message.substring(6);
+                } else if (message.equalsIgnoreCase("[clear]")) {
+                    Hud.Lyric = Hud.Info = Hud.List = "";
+                } else if (message.startsWith("{")) {
+                    Hud.Set(message);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
         asyncThread.start();
