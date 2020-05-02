@@ -1,4 +1,4 @@
-package Color_yr.ALLMusic_mod.Pack;
+package Color_yr.AllMusic.Pack;
 
 import net.minecraft.util.PacketByteBuf;
 

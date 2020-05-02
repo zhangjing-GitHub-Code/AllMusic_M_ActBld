@@ -1,6 +1,6 @@
-package Color_yr.ALLMusic_mod.Pack;
+package Color_yr.AllMusic.Pack;
 
-import Color_yr.ALLMusic_mod.ALLMusic_mod;
+import Color_yr.AllMusic.AllMusic;
 import net.minecraft.util.PacketByteBuf;
 
 public class GetPack implements IPacket {
@@ -10,6 +10,6 @@ public class GetPack implements IPacket {
         buf.readBytes(buff);
         buff[0] = 0;
         String data = new String(buff).substring(1);
-        ALLMusic_mod.onClicentPacket(data);
+        AllMusic.onClicentPacket(data);
     }
 }

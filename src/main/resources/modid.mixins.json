@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "Color_yr.ALLMusic_mod.mixin",
+  "package": "Color_yr.AllMusic.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
     "GuiShow",

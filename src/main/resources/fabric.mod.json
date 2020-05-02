@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "id": "allmusic_mod",
+  "id": "allmusic",
   "version": "${version}",
 
-  "name": "ALLMusic_mod",
+  "name": "AllMusic",
   "description": "A heartAge mod",
   "authors": [
     "Color_yr"
   ],
   "contact": {
-    "homepage": "https://github.com/HeartAge/ALLmusic-mod/tree/fabric",
-    "sources": "https://github.com/HeartAge/ALLmusic-mod/tree/fabric"
+    "homepage": "https://github.com/HeartAge/AllMusic_M/tree/fabric",
+    "sources": "https://github.com/HeartAge/AllMusic_M/tree/fabric"
   },
 
   "license": "CC0-1.0",

@@ -1,6 +1,6 @@
-package Color_yr.ALLMusic_mod.mixin;
+package Color_yr.AllMusic.mixin;
 
-import Color_yr.ALLMusic_mod.Hud.Hud;
+import Color_yr.AllMusic.Hud.Hud;
 import net.minecraft.client.gui.hud.InGameHud;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

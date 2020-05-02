@@ -1,4 +1,4 @@
-package Color_yr.ALLMusic_mod.Hud;
+package Color_yr.AllMusic.Hud;
 
 public class PosOBJ {
     private int x;
