@@ -18,14 +18,16 @@ public class Hud {
     public static void update() {
         InGameHud hud = MinecraftClient.getInstance().inGameHud;
         TextRenderer textRenderer = hud.getFontRenderer();
+        if (save == null)
+            return;
         if (save.isEnableInfo() && !Info.isEmpty())
             textRenderer.drawWithShadow(Info, save.getInfo().getX(),
                     save.getInfo().getY(), 0xffffff);
         if (save.isEnableList() && !List.isEmpty())
-            textRenderer.drawWithShadow(Info, save.getList().getX(),
-                    save.getInfo().getY(), 0xffffff);
+            textRenderer.drawWithShadow(List, save.getList().getX(),
+                    save.getList().getY(), 0xffffff);
         if (save.isEnableLyric() && !Lyric.isEmpty())
-            textRenderer.drawWithShadow(Info, save.getLyric().getX(),
-                    save.getInfo().getY(), 0xffffff);
+            textRenderer.drawWithShadow(Lyric, save.getLyric().getX(),
+                    save.getLyric().getY(), 0xffffff);
     }
 }
