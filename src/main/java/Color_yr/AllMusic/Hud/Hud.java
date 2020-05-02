@@ -20,14 +20,32 @@ public class Hud {
         TextRenderer textRenderer = hud.getFontRenderer();
         if (save == null)
             return;
-        if (save.isEnableInfo() && !Info.isEmpty())
-            textRenderer.drawWithShadow(Info, save.getInfo().getX(),
-                    save.getInfo().getY(), 0xffffff);
-        if (save.isEnableList() && !List.isEmpty())
-            textRenderer.drawWithShadow(List, save.getList().getX(),
-                    save.getList().getY(), 0xffffff);
-        if (save.isEnableLyric() && !Lyric.isEmpty())
-            textRenderer.drawWithShadow(Lyric, save.getLyric().getX(),
-                    save.getLyric().getY(), 0xffffff);
+        if (save.isEnableInfo() && !Info.isEmpty()) {
+            int offset = 0;
+            String[] temp = Info.split("\n");
+            for (String item : temp) {
+                textRenderer.drawWithShadow(item, save.getInfo().getX(),
+                        save.getInfo().getY() + offset, 0xffffff);
+                offset += 10;
+            }
+        }
+        if (save.isEnableList() && !List.isEmpty()) {
+            String[] temp = List.split("\n");
+            int offset = 0;
+            for (String item : temp) {
+                textRenderer.drawWithShadow(item, save.getList().getX(),
+                        save.getList().getY() + offset, 0xffffff);
+                offset += 10;
+            }
+        }
+        if (save.isEnableLyric() && !Lyric.isEmpty()) {
+            String[] temp = Lyric.split("\n");
+            int offset = 0;
+            for (String item : temp) {
+                textRenderer.drawWithShadow(item, save.getLyric().getX(),
+                        save.getLyric().getY() + offset, 0xffffff);
+                offset += 10;
+            }
+        }
     }
 }

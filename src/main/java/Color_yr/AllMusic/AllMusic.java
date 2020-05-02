@@ -50,6 +50,7 @@ public class AllMusic implements ModInitializer {
     public static void onServerQuit() {
         stopPlaying();
         Hud.Lyric = Hud.Info = Hud.List = "";
+        Hud.save = null;
     }
 
     public static void onClicentPacket(final String message) {
