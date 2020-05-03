@@ -40,8 +40,7 @@ public class AllMusic implements ModInitializer {
         ClientSidePacketRegistry.INSTANCE.register(id, (context, buffer) -> {
             try {
                 IPacket packet = packetClass.newInstance();
-                String data = packet.read(buffer);
-                context.getTaskQueue().executeSync(() -> onClicentPacket(data));
+                packet.read(buffer);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -55,30 +54,33 @@ public class AllMusic implements ModInitializer {
     }
 
     public static void onClicentPacket(final String message) {
-        try {
-            if (message.equals("[Stop]")) {
-                stopPlaying();
-            } else if (message.startsWith("[Play]")) {
-                MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.MUSIC);
-                MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.RECORDS);
-                stopPlaying();
-                nowURL = new URL(message.replace("[Play]", ""));
-                nowPlaying.SetMusic(nowURL.openStream());
-                nowPlaying.play();
-            } else if (message.startsWith("[Lyric]")) {
-                Hud.Lyric = message.substring(7);
-            } else if (message.startsWith("[Info]")) {
-                Hud.Info = message.substring(6);
-            } else if (message.startsWith("[List]")) {
-                Hud.List = message.substring(6);
-            } else if (message.equalsIgnoreCase("[clear]")) {
-                Hud.Lyric = Hud.Info = Hud.List = "";
-            } else if (message.startsWith("{")) {
-                Hud.Set(message);
+        final Thread asyncThread = new Thread(() -> {
+            try {
+                if (message.equals("[Stop]")) {
+                    stopPlaying();
+                } else if (message.startsWith("[Play]")) {
+                    MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.MUSIC);
+                    MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.RECORDS);
+                    stopPlaying();
+                    nowURL = new URL(message.replace("[Play]", ""));
+                    nowPlaying.SetMusic(nowURL.openStream());
+                    nowPlaying.play();
+                } else if (message.startsWith("[Lyric]")) {
+                    Hud.Lyric = message.substring(7);
+                } else if (message.startsWith("[Info]")) {
+                    Hud.Info = message.substring(6);
+                } else if (message.startsWith("[List]")) {
+                    Hud.List = message.substring(6);
+                } else if (message.equalsIgnoreCase("[clear]")) {
+                    Hud.Lyric = Hud.Info = Hud.List = "";
+                } else if (message.startsWith("{")) {
+                    Hud.Set(message);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
+        asyncThread.start();
     }
 
     private static void stopPlaying() {
