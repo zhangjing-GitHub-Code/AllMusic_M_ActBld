@@ -1,7 +1,7 @@
 [
   {
     "modid": "allmusic",
-    "name": "ALLMUSIC",
+    "name": "AllMusic",
     "description": "HeartAge_server_mod",
     "version": "${version}",
     "mcversion": "${mcversion}",
