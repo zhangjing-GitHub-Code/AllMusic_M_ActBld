@@ -40,7 +40,8 @@ public class AllMusic implements ModInitializer {
         ClientSidePacketRegistry.INSTANCE.register(id, (context, buffer) -> {
             try {
                 IPacket packet = packetClass.newInstance();
-                packet.read(buffer);
+                String data = packet.read(buffer);
+                context.getTaskQueue().executeSync(() -> onClicentPacket(data));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -54,33 +55,30 @@ public class AllMusic implements ModInitializer {
     }
 
     public static void onClicentPacket(final String message) {
-        final Thread asyncThread = new Thread(() -> {
-            try {
-                if (message.equals("[Stop]")) {
-                    stopPlaying();
-                } else if (message.startsWith("[Play]")) {
-                    MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.MUSIC);
-                    MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.RECORDS);
-                    stopPlaying();
-                    nowURL = new URL(message.replace("[Play]", ""));
-                    nowPlaying.SetMusic(nowURL.openStream());
-                    nowPlaying.play();
-                } else if (message.startsWith("[Lyric]")) {
-                    Hud.Lyric = message.substring(7);
-                } else if (message.startsWith("[Info]")) {
-                    Hud.Info = message.substring(6);
-                } else if (message.startsWith("[List]")) {
-                    Hud.List = message.substring(6);
-                } else if (message.equalsIgnoreCase("[clear]")) {
-                    Hud.Lyric = Hud.Info = Hud.List = "";
-                } else if (message.startsWith("{")) {
-                    Hud.Set(message);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            if (message.equals("[Stop]")) {
+                stopPlaying();
+            } else if (message.startsWith("[Play]")) {
+                MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.MUSIC);
+                MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.RECORDS);
+                stopPlaying();
+                nowURL = new URL(message.replace("[Play]", ""));
+                nowPlaying.SetMusic(nowURL.openStream());
+                nowPlaying.play();
+            } else if (message.startsWith("[Lyric]")) {
+                Hud.Lyric = message.substring(7);
+            } else if (message.startsWith("[Info]")) {
+                Hud.Info = message.substring(6);
+            } else if (message.startsWith("[List]")) {
+                Hud.List = message.substring(6);
+            } else if (message.equalsIgnoreCase("[clear]")) {
+                Hud.Lyric = Hud.Info = Hud.List = "";
+            } else if (message.startsWith("{")) {
+                Hud.Set(message);
             }
-        });
-        asyncThread.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static void stopPlaying() {

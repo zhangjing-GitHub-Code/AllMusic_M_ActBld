@@ -7,11 +7,10 @@ import java.nio.charset.StandardCharsets;
 
 public class GetPack implements IPacket {
     @Override
-    public void read(PacketByteBuf buf) {
+    public String read(PacketByteBuf buf) {
         byte[] buff = new byte[buf.readableBytes()];
         buf.readBytes(buff);
         buff[0] = 0;
-        String data = new String(buff, StandardCharsets.UTF_8).substring(1);
-        AllMusic.onClicentPacket(data);
+        return new String(buff, StandardCharsets.UTF_8).substring(1);
     }
 }
