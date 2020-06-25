@@ -22,10 +22,10 @@
  *----------------------------------------------------------------------
  */
 
-package javazoom.jl.player;
+package Color_yr.AllMusic.player;
 
-import javazoom.jl.decoder.Decoder;
-import javazoom.jl.decoder.JavaLayerException;
+import Color_yr.AllMusic.decoder.Decoder;
+import Color_yr.AllMusic.decoder.JavaLayerException;
 
 import javax.sound.sampled.*;
 
@@ -36,7 +36,7 @@ import javax.sound.sampled.*;
  * @author Mat McGowan
  * @since 0.0.8
  */
-public class JavaSoundAudioDevice {
+public class SoundAudioDevice {
     public boolean startplay = false;
     private SourceDataLine source = null;
     private boolean open = false;
@@ -47,7 +47,7 @@ public class JavaSoundAudioDevice {
 
     private FloatControl volctrl;
 
-    public JavaSoundAudioDevice() {
+    public SoundAudioDevice() {
         try {
             Throwable t = null;
             try {
