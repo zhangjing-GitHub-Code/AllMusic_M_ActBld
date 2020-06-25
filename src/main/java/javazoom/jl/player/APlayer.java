@@ -36,14 +36,14 @@ import java.io.InputStream;
 
 // REVIEW: the audio device should not be opened until the
 // first MPEG audio frame has been decoded. 
-public class Player {
+public class APlayer {
 
     private Bitstream bitstream;
     private Decoder decoder;
     private JavaSoundAudioDevice audio;
     private boolean isClose;
 
-    public Player() {
+    public APlayer() {
         try {
             audio = new JavaSoundAudioDevice();
         } catch (Exception e) {

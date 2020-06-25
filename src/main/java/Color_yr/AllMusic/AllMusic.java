@@ -25,7 +25,7 @@ public class AllMusic {
     static final String VERSION = "2.0.0";
     public static int v = -1;
     public static boolean isPlay = false;
-    private final Player nowPlaying = new Player();
+    private final APlayer nowPlaying = new APlayer();
 
     public final Thread thread = new Thread(() -> {
         while (true) {
