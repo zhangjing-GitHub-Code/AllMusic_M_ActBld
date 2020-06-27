@@ -1,7 +1,7 @@
 package Color_yr.AllMusic.Pack;
 
 import Color_yr.AllMusic.AllMusic;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 
 import java.nio.charset.StandardCharsets;
 

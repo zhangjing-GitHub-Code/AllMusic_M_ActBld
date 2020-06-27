@@ -1,9 +1,9 @@
 package Color_yr.AllMusic;
 
-import Color_yr.AllMusic.Hud.Hud;
+import Color_yr.AllMusic.Hud.HudShow;
 import Color_yr.AllMusic.Pack.GetPack;
 import Color_yr.AllMusic.Pack.IPacket;
-import javazoom.jl.player.Player;
+import Color_yr.AllMusic.player.Player;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -49,8 +49,8 @@ public class AllMusic implements ModInitializer {
 
     public static void onServerQuit() {
         stopPlaying();
-        Hud.Lyric = Hud.Info = Hud.List = "";
-        Hud.save = null;
+        HudShow.Lyric = HudShow.Info = HudShow.List = "";
+        HudShow.save = null;
     }
 
     public static void onClicentPacket(final String message) {
@@ -66,15 +66,15 @@ public class AllMusic implements ModInitializer {
                     nowPlaying.SetMusic(nowURL.openStream());
                     nowPlaying.play();
                 } else if (message.startsWith("[Lyric]")) {
-                    Hud.Lyric = message.substring(7);
+                    HudShow.Lyric = message.substring(7);
                 } else if (message.startsWith("[Info]")) {
-                    Hud.Info = message.substring(6);
+                    HudShow.Info = message.substring(6);
                 } else if (message.startsWith("[List]")) {
-                    Hud.List = message.substring(6);
+                    HudShow.List = message.substring(6);
                 } else if (message.equalsIgnoreCase("[clear]")) {
-                    Hud.Lyric = Hud.Info = Hud.List = "";
+                    HudShow.Lyric = HudShow.Info = HudShow.List = "";
                 } else if (message.startsWith("{")) {
-                    Hud.Set(message);
+                    HudShow.Set(message);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
