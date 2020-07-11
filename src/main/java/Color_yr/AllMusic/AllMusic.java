@@ -1,7 +1,7 @@
 package Color_yr.AllMusic;
 
 import Color_yr.AllMusic.Hud.Hud;
-import javazoom.jl.player.Player;
+import Color_yr.AllMusic.player.AudioPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 
 @Mod("allmusic")
 public class AllMusic {
-    private static final Player nowPlaying = new Player();
+    private static final AudioPlayer nowPlaying = new AudioPlayer();
     private static URL nowURL;
     public static boolean isPlay = false;
     public static int v = -1;
