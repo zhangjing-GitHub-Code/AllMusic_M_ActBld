@@ -18,10 +18,10 @@
  *----------------------------------------------------------------------
  */
 
-package javazoom.jl.player;
+package Color_yr.AllMusic.player;
 
 import Color_yr.AllMusic.AllMusic;
-import javazoom.jl.decoder.*;
+import Color_yr.AllMusic.decoder.*;
 
 import javax.sound.sampled.FloatControl;
 import java.io.InputStream;
@@ -36,14 +36,14 @@ import java.io.InputStream;
 
 // REVIEW: the audio device should not be opened until the
 // first MPEG audio frame has been decoded. 
-public class Player {
+public class AudioPlayer {
 
     private Bitstream bitstream;
     private Decoder decoder;
     private JavaSoundAudioDevice audio;
     private boolean isClose;
 
-    public Player() {
+    public AudioPlayer() {
         try {
             audio = new JavaSoundAudioDevice();
         } catch (Exception e) {

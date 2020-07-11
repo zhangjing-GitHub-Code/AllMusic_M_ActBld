@@ -3,7 +3,7 @@ package Color_yr.AllMusic;
 import Color_yr.AllMusic.Hud.Hud;
 import Color_yr.AllMusic.Pack.GetPack;
 import Color_yr.AllMusic.Pack.IPacket;
-import javazoom.jl.player.Player;
+import Color_yr.AllMusic.player.AudioPlayer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -14,7 +14,7 @@ import java.net.URL;
 
 public class AllMusic implements ModInitializer {
     public static final Identifier ID = new Identifier("allmusic", "channel");
-    private static final Player nowPlaying = new Player();
+    private static final AudioPlayer nowPlaying = new AudioPlayer();
     public static boolean isPlay = false;
     public static int v = -1;
     private static URL nowURL;
