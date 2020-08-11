@@ -27,8 +27,8 @@ public class HudShow {
             int offset = 0;
             String[] temp = Info.split("\n");
             for (String item : temp) {
-                textRenderer.drawWithShadow(stack, item,  save.getInfo().getX(),
-                         save.getInfo().getY() + offset, 0xffffff);
+                textRenderer.drawWithShadow(stack, item, save.getInfo().getX(),
+                        save.getInfo().getY() + offset, 0xffffff);
                 offset += 10;
             }
         }
@@ -37,7 +37,7 @@ public class HudShow {
             int offset = 0;
             for (String item : temp) {
                 textRenderer.drawWithShadow(stack, item, save.getList().getX(),
-                         save.getList().getY() + offset, 0xffffff);
+                        save.getList().getY() + offset, 0xffffff);
                 offset += 10;
             }
         }
