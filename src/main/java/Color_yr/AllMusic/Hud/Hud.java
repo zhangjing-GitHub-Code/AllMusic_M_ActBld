@@ -5,11 +5,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
 public class Hud {
+    public static final Object lock = new Object();
     public static String Info = "";
     public static String List = "";
     public static String Lyric = "";
     public static SaveOBJ save;
-    public static final Object lock = new Object();
 
     public static void Set(String data) {
         synchronized (lock) {
