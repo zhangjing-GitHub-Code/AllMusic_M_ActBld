@@ -12,7 +12,7 @@ public class HudShow {
     public static String Lyric;
     public static SaveOBJ save;
 
-    private static MatrixStack stack = new MatrixStack();
+    private static final MatrixStack stack = new MatrixStack();
 
     public static void Set(String data) {
         save = new Gson().fromJson(data, SaveOBJ.class);

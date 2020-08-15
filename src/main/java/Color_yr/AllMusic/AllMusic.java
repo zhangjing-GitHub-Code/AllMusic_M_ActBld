@@ -3,7 +3,7 @@ package Color_yr.AllMusic;
 import Color_yr.AllMusic.Hud.HudShow;
 import Color_yr.AllMusic.Pack.GetPack;
 import Color_yr.AllMusic.Pack.IPacket;
-import Color_yr.AllMusic.player.Player;
+import Color_yr.AllMusic.player.APlayer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -15,7 +15,7 @@ import java.net.URL;
 
 public class AllMusic implements ModInitializer {
     public static final Identifier ID = new Identifier("allmusic", "channel");
-    private static final Player nowPlaying = new Player();
+    private static final APlayer nowPlaying = new APlayer();
     public static boolean isPlay = false;
     public static int v = -1;
     private static URL nowURL;
@@ -88,7 +88,7 @@ public class AllMusic implements ModInitializer {
                     nowURL = Get(nowURL);
                     if (nowURL == null)
                         return;
-                    nowPlaying.SetMusic(nowURL.openStream());
+                    nowPlaying.SetMusic(nowURL);
                     nowPlaying.play();
                 } else if (message.startsWith("[Lyric]")) {
                     HudShow.Lyric = message.substring(7);
@@ -109,7 +109,11 @@ public class AllMusic implements ModInitializer {
     }
 
     private static void stopPlaying() {
-        nowPlaying.close();
+        try {
+            nowPlaying.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
