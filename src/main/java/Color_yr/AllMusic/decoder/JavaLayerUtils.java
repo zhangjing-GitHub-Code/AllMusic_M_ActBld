@@ -43,7 +43,7 @@ public class JavaLayerUtils {
      * @throws IOException is thrown if there was a problem reading
      *                     the underlying stream, or an object could not be deserialized
      *                     from the stream.
-     * @see java.io.ObjectInputStream
+     * @see ObjectInputStream
      */
     static public Object deserialize(InputStream in)
             throws IOException {
