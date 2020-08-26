@@ -75,6 +75,8 @@ public class AllMusic {
         if (!isPlay)
             return;
         SoundCategory data = e.getSound().getCategory();
+        if(data == null)
+            return;
         switch (data) {
             case MUSIC:
             case RECORDS:
