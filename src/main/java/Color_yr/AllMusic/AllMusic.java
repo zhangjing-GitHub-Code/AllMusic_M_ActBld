@@ -1,7 +1,9 @@
 package Color_yr.AllMusic;
 
 import Color_yr.AllMusic.Hud.Hud;
-import Color_yr.AllMusic.player.APlayer;
+import Color_yr.AllMusic.player.Android.AndroidPlayer;
+import Color_yr.AllMusic.player.IPlayer;
+import Color_yr.AllMusic.player.JAVA.JAVAPlayer;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.SoundCategory;
@@ -13,6 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import org.apache.logging.log4j.Logger;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -21,11 +24,12 @@ import java.nio.charset.StandardCharsets;
 @Mod(modid = AllMusic.MODID, version = AllMusic.VERSION, acceptedMinecraftVersions = "[1.12,)")
 public class AllMusic {
     static final String MODID = "allmusic";
-    static final String VERSION = "2.1.0";
+    static final String VERSION = "2.4.0";
     public static int v = -1;
     public static boolean isPlay = false;
     private static URL nowURL;
-    private final APlayer nowPlaying = new APlayer();
+    private IPlayer nowPlaying;
+    public static Logger logger;
 
     public final Thread thread = new Thread(() -> {
         while (true) {
@@ -65,6 +69,13 @@ public class AllMusic {
 
     @Mod.EventHandler
     public void preload(final FMLPreInitializationEvent evt) {
+        logger = evt.getModLog();
+        try {
+            Class.forName("android.media.MediaPlayer");
+            nowPlaying = new AndroidPlayer();
+        } catch (ClassNotFoundException e) {
+            nowPlaying = new JAVAPlayer();
+        }
         MinecraftForge.EVENT_BUS.register(this);
         thread.start();
         NetworkRegistry.INSTANCE.newEventDrivenChannel("allmusic:channel").register(this);

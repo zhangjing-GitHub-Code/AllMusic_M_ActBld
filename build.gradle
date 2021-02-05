@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = "2.3.0"
+version = "2.4.0"
 group = "com.Color_yr.AllMusic" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "AllMusic"
 
@@ -50,7 +50,7 @@ minecraft {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2854'
-
+    dependencies { compile fileTree(dir:'lib',include:['*.jar'])}
 }
 
 jar.finalizedBy('reobfJar')
