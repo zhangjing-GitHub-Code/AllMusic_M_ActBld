@@ -3,7 +3,9 @@ package Color_yr.AllMusic;
 import Color_yr.AllMusic.Hud.Hud;
 import Color_yr.AllMusic.Pack.GetPack;
 import Color_yr.AllMusic.Pack.IPacket;
-import Color_yr.AllMusic.player.APlayer;
+import Color_yr.AllMusic.player.Android.AndroidPlayer;
+import Color_yr.AllMusic.player.IPlayer;
+import Color_yr.AllMusic.player.JAVA.JAVAPlayer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -15,7 +17,7 @@ import java.net.URL;
 
 public class AllMusic implements ModInitializer {
     public static final Identifier ID = new Identifier("allmusic", "channel");
-    private static final APlayer nowPlaying = new APlayer();
+    private static IPlayer nowPlaying;
     public static boolean isPlay = false;
     public static int v = -1;
     private static URL nowURL;
@@ -118,6 +120,12 @@ public class AllMusic implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        try {
+            Class.forName("javax.sound.sampled.AudioFormat");
+            nowPlaying = new JAVAPlayer();
+        } catch (ClassNotFoundException e) {
+            nowPlaying = new AndroidPlayer();
+        }
         registerPacket(ID, GetPack.class);
         thread.start();
     }
