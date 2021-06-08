@@ -89,7 +89,7 @@ public class Hud {
 
                     GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
                     GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_NEAREST);
-                    GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_MAX_TEXTURE_LOD_BIAS, -1);
+//                    GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_MAX_TEXTURE_LOD_BIAS, -1);
                     haveImg = true;
                 });
             } catch (Exception e) {
@@ -100,7 +100,7 @@ public class Hud {
     }
 
     public static void update() {
-        if(Minecraft.getMinecraft().isGamePaused())
+        if (Minecraft.getMinecraft().isGamePaused())
             return;
         FontRenderer hud = Minecraft.getMinecraft().fontRenderer;
         if (save == null || hud == null)
@@ -135,8 +135,7 @@ public class Hud {
                     }
                 }
 //                if(save.isEnablePic() && image!=null)
-                if(haveImg)
-                {
+                if (haveImg) {
                     GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
                     GL11.glPushMatrix();
                     GL11.glTranslatef((float) save.getPic().getX(), (float) save.getPic().getY(), 0.0f);
