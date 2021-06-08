@@ -3,13 +3,45 @@ package Color_yr.AllMusic.Hud;
 import com.google.gson.Gson;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL30;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.ByteBuffer;
 
 public class Hud {
     public static final Object lock = new Object();
     public static String Info = "";
     public static String List = "";
     public static String Lyric = "";
+    private static String PicUrl = "";
     public static SaveOBJ save;
+    private static ByteBuffer byteBuffer;
+    private static int textureID;
+    private static boolean haveImg;
+    private static int Width;
+    private static int Height;
+
+    static {
+        textureID = GL11.glGenTextures();
+    }
 
     public static void Set(String data) {
         synchronized (lock) {
@@ -17,7 +49,59 @@ public class Hud {
         }
     }
 
+    public static void SetImg(String picUrl) {
+        PicUrl = picUrl;
+
+        if (PicUrl != null) {
+            try {
+                URL url = new URL(picUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(4 * 1000);
+                connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36 Edg/84.0.522.52");
+                connection.setRequestProperty("Host", "music.163.com");
+                connection.connect();
+                InputStream inputStream = connection.getInputStream();
+                BufferedImage image = ImageIO.read(inputStream);
+                Width = image.getWidth();
+                Height = image.getHeight();
+                int[] pixels = new int[image.getWidth() * image.getHeight()];
+                image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
+                byteBuffer = ByteBuffer.allocateDirect(image.getWidth() * image.getHeight() * 4);
+
+                for (int h = 0; h < image.getHeight(); h++) {
+                    for (int w = 0; w < image.getWidth(); w++) {
+                        int pixel = pixels[h * image.getWidth() + w];
+
+                        byteBuffer.put((byte) ((pixel >> 16) & 0xFF));
+                        byteBuffer.put((byte) ((pixel >> 8) & 0xFF));
+                        byteBuffer.put((byte) (pixel & 0xFF));
+                        byteBuffer.put((byte) ((pixel >> 24) & 0xFF));
+                    }
+                }
+
+                byteBuffer.flip();
+                inputStream.close();
+
+                FMLClientHandler.instance().getClient().addScheduledTask(() -> {
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
+                    GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, byteBuffer);
+
+                    GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+                    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_NEAREST);
+                    GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_MAX_TEXTURE_LOD_BIAS, -1);
+                    haveImg = true;
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                haveImg = false;
+            }
+        }
+    }
+
     public static void update() {
+        if(Minecraft.getMinecraft().isGamePaused())
+            return;
         FontRenderer hud = Minecraft.getMinecraft().fontRenderer;
         if (save == null || hud == null)
             return;
@@ -49,6 +133,25 @@ public class Hud {
                                 save.getLyric().getY() + offset, 0xffffff);
                         offset += 10;
                     }
+                }
+//                if(save.isEnablePic() && image!=null)
+                if(haveImg)
+                {
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
+                    GL11.glPushMatrix();
+                    GL11.glTranslatef((float) save.getPic().getX(), (float) save.getPic().getY(), 0.0f);
+                    GL11.glBegin(7);
+                    GL11.glTexCoord2f(0.0f, 0.0f);
+                    GL11.glVertex3f(0.0f, 0.0f, 0.0f);
+                    GL11.glTexCoord2f(0.0f, 1.0f);
+                    GL11.glVertex3f(0.0f, (float) 70, 0.0f);
+                    GL11.glTexCoord2f(1.0f, 1.0f);
+                    GL11.glVertex3f((float) 70, (float) 70, 0.0f);
+                    GL11.glTexCoord2f(1.0f, 0.0f);
+                    GL11.glVertex3f((float) 70, 0.0f, 0.0f);
+                    GL11.glEnd();
+                    GL11.glPopMatrix();
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
