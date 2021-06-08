@@ -132,6 +132,8 @@ public class AllMusic {
                     Hud.Info = message.substring(6);
                 } else if (message.startsWith("[List]")) {
                     Hud.List = message.substring(6);
+                } else if (message.startsWith("[Img]")) {
+                    Hud.SetImg(message.substring(5));
                 } else if (message.equalsIgnoreCase("[clear]")) {
                     Hud.Lyric = Hud.Info = Hud.List = "";
                 } else if (message.startsWith("{")) {
@@ -152,6 +154,7 @@ public class AllMusic {
     private void stopPlaying() {
         try {
             nowPlaying.close();
+            Hud.stop();
         } catch (Exception e) {
             e.printStackTrace();
         }
