@@ -1,6 +1,6 @@
 package Color_yr.AllMusic;
 
-import Color_yr.AllMusic.Hud.HudShow;
+import Color_yr.AllMusic.Hud.Hud;
 import Color_yr.AllMusic.Pack.GetPack;
 import Color_yr.AllMusic.Pack.IPacket;
 import Color_yr.AllMusic.player.APlayer;
@@ -50,8 +50,8 @@ public class AllMusic implements ModInitializer {
 
     public static void onServerQuit() {
         stopPlaying();
-        HudShow.Lyric = HudShow.Info = HudShow.List = "";
-        HudShow.save = null;
+        Hud.Lyric = Hud.Info = Hud.List = "";
+        Hud.save = null;
     }
 
     public static URL Get(URL url) {
@@ -91,15 +91,17 @@ public class AllMusic implements ModInitializer {
                     nowPlaying.SetMusic(nowURL);
                     nowPlaying.play();
                 } else if (message.startsWith("[Lyric]")) {
-                    HudShow.Lyric = message.substring(7);
+                    Hud.Lyric = message.substring(7);
                 } else if (message.startsWith("[Info]")) {
-                    HudShow.Info = message.substring(6);
+                    Hud.Info = message.substring(6);
                 } else if (message.startsWith("[List]")) {
-                    HudShow.List = message.substring(6);
+                    Hud.List = message.substring(6);
+                } else if (message.startsWith("[Img]")) {
+                    Hud.SetImg(message.substring(5));
                 } else if (message.equalsIgnoreCase("[clear]")) {
-                    HudShow.Lyric = HudShow.Info = HudShow.List = "";
+                    Hud.Lyric = Hud.Info = Hud.List = "";
                 } else if (message.startsWith("{")) {
-                    HudShow.Set(message);
+                    Hud.Set(message);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -111,6 +113,7 @@ public class AllMusic implements ModInitializer {
     private static void stopPlaying() {
         try {
             nowPlaying.close();
+            Hud.stop();
         } catch (Exception e) {
             e.printStackTrace();
         }
