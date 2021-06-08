@@ -147,5 +147,6 @@ public class AllMusic {
 
     private void stopPlaying() throws Exception {
         nowPlaying.close();
+        Hud.stop();
     }
 }
