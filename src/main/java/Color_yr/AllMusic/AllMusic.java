@@ -3,7 +3,6 @@ package Color_yr.AllMusic;
 import Color_yr.AllMusic.Hud.Hud;
 import Color_yr.AllMusic.Pack.GetPack;
 import Color_yr.AllMusic.Pack.IPacket;
-import Color_yr.AllMusic.player.Android.AndroidPlayer;
 import Color_yr.AllMusic.player.IPlayer;
 import Color_yr.AllMusic.player.JAVA.JAVAPlayer;
 import net.fabricmc.api.ModInitializer;
@@ -98,6 +97,8 @@ public class AllMusic implements ModInitializer {
                     Hud.Info = message.substring(6);
                 } else if (message.startsWith("[List]")) {
                     Hud.List = message.substring(6);
+                } else if (message.startsWith("[Img]")) {
+                    Hud.SetImg(message.substring(5));
                 } else if (message.equalsIgnoreCase("[clear]")) {
                     Hud.Lyric = Hud.Info = Hud.List = "";
                 } else if (message.startsWith("{")) {
@@ -113,6 +114,7 @@ public class AllMusic implements ModInitializer {
     private static void stopPlaying() {
         try {
             nowPlaying.close();
+            Hud.stop();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,12 +122,7 @@ public class AllMusic implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        try {
-            Class.forName("javax.sound.sampled.AudioFormat");
-            nowPlaying = new JAVAPlayer();
-        } catch (ClassNotFoundException e) {
-            nowPlaying = new AndroidPlayer();
-        }
+        nowPlaying = new JAVAPlayer();
         registerPacket(ID, GetPack.class);
         thread.start();
     }
