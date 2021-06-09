@@ -130,7 +130,7 @@ public class Hud {
                     offset += 10;
                 }
             }
-            if(haveImg)
+            if(save.isEnablePic() && haveImg)
             {
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
