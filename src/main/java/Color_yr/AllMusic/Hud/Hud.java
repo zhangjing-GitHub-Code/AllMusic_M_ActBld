@@ -24,6 +24,7 @@ public class Hud {
     private static ByteBuffer byteBuffer;
     private static int textureID;
     private static boolean haveImg;
+
     static {
         textureID = GL11.glGenTextures();
     }
@@ -116,8 +117,7 @@ public class Hud {
                 offset += 10;
             }
         }
-        if(haveImg)
-        {
+        if (save.isEnablePic() && haveImg) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
             GL11.glPushMatrix();
             GL11.glTranslatef((float) save.getPic().getX(), (float) save.getPic().getY(), 0.0f);
