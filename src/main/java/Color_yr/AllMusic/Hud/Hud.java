@@ -100,7 +100,7 @@ public class Hud {
     }
 
     public static void update() {
-        if(Minecraft.getMinecraft().isGamePaused())
+        if (Minecraft.getMinecraft().isGamePaused())
             return;
         FontRenderer hud = Minecraft.getMinecraft().fontRenderer;
         if (save == null || hud == null)
@@ -134,9 +134,7 @@ public class Hud {
                         offset += 10;
                     }
                 }
-//                if(save.isEnablePic() && image!=null)
-                if(haveImg)
-                {
+                if (save.isEnablePic() && haveImg) {
                     GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
                     GL11.glPushMatrix();
                     GL11.glTranslatef((float) save.getPic().getX(), (float) save.getPic().getY(), 0.0f);

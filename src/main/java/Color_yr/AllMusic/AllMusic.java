@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 @Mod(modid = AllMusic.MODID, version = AllMusic.VERSION, acceptedMinecraftVersions = "[1.12,)")
 public class AllMusic {
     static final String MODID = "allmusic";
-    static final String VERSION = "2.5.0";
+    static final String VERSION = "2.5.1";
     public static int v = -1;
     public static boolean isPlay = false;
     private static URL nowURL;
