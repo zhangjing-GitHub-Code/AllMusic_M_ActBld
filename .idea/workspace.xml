@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dd1594ed-4b8b-4386-b4dc-7693e244bb03" name="默认变更列表" comment="" />
+    <list default="true" id="dd1594ed-4b8b-4386-b4dc-7693e244bb03" name="默认变更列表" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -46,10 +49,20 @@
       </state>
     </system>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1u6tyr1IGNxCO5dqTKJIPCFACzz" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="新增" />
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="project.structure.last.edited" value="项目" />
     <property name="project.structure.proportion" value="0.1484375" />
     <property name="project.structure.side.proportion" value="0.26865673" />
@@ -77,9 +90,9 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Gradle.AllMusic_M [build]" />
       <item itemvalue="应用程序.Minecraft Client" />
       <item itemvalue="应用程序.Minecraft Server" />
-      <item itemvalue="Gradle.AllMusic_M [build]" />
     </list>
     <recent_temporary>
       <list>
@@ -88,6 +101,13 @@
     </recent_temporary>
   </component>
   <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="dd1594ed-4b8b-4386-b4dc-7693e244bb03" name="默认变更列表" comment="" />
+      <created>1623998124921</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1623998124921</updated>
+    </task>
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
