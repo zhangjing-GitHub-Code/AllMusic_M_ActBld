@@ -18,11 +18,10 @@ public class Hud {
     public static String Info = "";
     public static String List = "";
     public static String Lyric = "";
-    private static String PicUrl = "";
     public static SaveOBJ save;
     private static ByteBuffer byteBuffer;
-    private static int textureID;
-    private static boolean haveImg;
+    private static final int textureID;
+    public static boolean haveImg;
     public static final Object lock = new Object();
 
     static {
@@ -41,9 +40,8 @@ public class Hud {
     }
 
     public static void SetImg(String picUrl) {
-        PicUrl = picUrl;
 
-        if (PicUrl != null) {
+        if (picUrl != null) {
             try {
                 URL url = new URL(picUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
