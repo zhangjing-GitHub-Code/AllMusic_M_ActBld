@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dd1594ed-4b8b-4386-b4dc-7693e244bb03" name="默认变更列表" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/AllMusic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/AllMusic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/Hud/Hud.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/Hud/Hud.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/Pack/GetPack.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/Pack/IPacket.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/decoder/Bitstream.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/decoder/Bitstream.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +47,12 @@
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="build" type="c8890929:TasksNode$1" />
               </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="AllMusic_M" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="fabric" type="c8890929:TasksNode$1" />
+              </path>
             </expand>
             <select />
           </tree_state>
@@ -63,11 +74,13 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../AllMusic_P" />
     <property name="project.structure.last.edited" value="项目" />
     <property name="project.structure.proportion" value="0.1484375" />
     <property name="project.structure.side.proportion" value="0.26865673" />
   </component>
-  <component name="RunManager" selected="Gradle.AllMusic_M [build]">
+  <component name="RunManager" selected="Gradle.AllMusic_M [runClient]">
     <configuration name="AllMusic_M [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -89,17 +102,41 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="AllMusic_M [runClient]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="runClient" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Gradle.AllMusic_M [build]" />
       <item itemvalue="应用程序.Minecraft Client" />
       <item itemvalue="应用程序.Minecraft Server" />
+      <item itemvalue="Gradle.AllMusic_M [runClient]" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.AllMusic_M [runClient]" />
         <item itemvalue="Gradle.AllMusic_M [build]" />
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="默认任务">
       <changelist id="dd1594ed-4b8b-4386-b4dc-7693e244bb03" name="默认变更列表" comment="" />
@@ -111,6 +148,15 @@
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
