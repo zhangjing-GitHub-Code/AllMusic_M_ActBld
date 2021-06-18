@@ -49,7 +49,7 @@ public class AllMusic implements ModInitializer {
         if (url.toString().contains("https://music.163.com/song/media/outer/url?id=")
                 || url.toString().contains("http://music.163.com/song/media/outer/url?id=")) {
             try {
-                var connection = (HttpURLConnection) url.openConnection();
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setConnectTimeout(4 * 1000);
                 connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
@@ -115,7 +115,7 @@ public class AllMusic implements ModInitializer {
     public void onInitialize() {
         ClientPlayNetworking.registerGlobalReceiver(ID, (client, handler, buffer, responseSender) -> {
             try {
-                var buff = new byte[buffer.readableBytes()];
+                byte[] buff = new byte[buffer.readableBytes()];
                 buffer.readBytes(buff);
                 buff[0] = 0;
                 String data = new String(buff, StandardCharsets.UTF_8).substring(1);
