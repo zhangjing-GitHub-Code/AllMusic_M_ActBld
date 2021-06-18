@@ -97,6 +97,7 @@ public class AllMusic {
             e1.printStackTrace();
         }
         Hud.Lyric = Hud.Info = Hud.List = "";
+        Hud.haveImg = false;
         Hud.save = null;
     }
 
@@ -131,6 +132,7 @@ public class AllMusic {
                     Hud.SetImg(message.substring(5));
                 } else if (message.equalsIgnoreCase("[clear]")) {
                     Hud.Lyric = Hud.Info = Hud.List = "";
+                    Hud.haveImg = false;
                 } else if (message.startsWith("{")) {
                     Hud.Set(message);
                 }
