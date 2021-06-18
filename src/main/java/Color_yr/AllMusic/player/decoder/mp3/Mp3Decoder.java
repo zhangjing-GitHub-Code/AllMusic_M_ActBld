@@ -126,12 +126,12 @@ public class Mp3Decoder implements DecoderErrors, IDecoder {
     }
 
     @Override
-    public void close() throws Exception{
+    public void close() throws Exception {
         bitstream.close();
     }
 
     @Override
-    public void set(HttpClient client, URL url) throws Exception{
+    public void set(HttpClient client, URL url) throws Exception {
         bitstream = new Bitstream(client, url);
     }
 
@@ -154,11 +154,6 @@ public class Mp3Decoder implements DecoderErrors, IDecoder {
      */
     public int getOutputChannels() {
         return outputChannels;
-    }
-
-    @Override
-    public void seek(int samplePos) throws Exception {
-
     }
 
 

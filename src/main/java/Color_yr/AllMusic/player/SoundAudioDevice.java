@@ -101,7 +101,7 @@ public class SoundAudioDevice {
             volctrl = (FloatControl) source.getControl(FloatControl.Type.MASTER_GAIN);
             startplay = true;
         }
-        source.write(samples,0, len);
+        source.write(samples, 0, len);
     }
 
 }

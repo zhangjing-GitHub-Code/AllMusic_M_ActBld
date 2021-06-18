@@ -14,6 +14,4 @@ public interface IDecoder {
     int getOutputFrequency();
 
     int getOutputChannels();
-
-    void seek(int samplePos) throws Exception;
 }

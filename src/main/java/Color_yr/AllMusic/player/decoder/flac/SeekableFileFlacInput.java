@@ -1,19 +1,19 @@
-/* 
+/*
  * FLAC library (Java)
- * 
+ *
  * Copyright (c) Project Nayuki
  * https://www.nayuki.io/page/flac-library-java
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program (see COPYING.txt and COPYING.LESSER.txt).
  * If not, see <http://www.gnu.org/licenses/>.
@@ -27,6 +27,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -39,68 +40,61 @@ import java.net.URL;
  */
 public final class SeekableFileFlacInput extends AbstractFlacLowLevelInput {
 
-	/*---- Fields ----*/
+    /*---- Fields ----*/
 
-	// The underlying byte-based input stream to read from.
-	private SeekBufferedInputStream raf;
-	private final HttpGet get;
-	private final HttpClient client;
-	private InputStream content;
-	private long local;
-
-
-	/*---- Constructors ----*/
-
-	public SeekableFileFlacInput(HttpClient client, URL url) throws Exception{
-		super();
-		this.client = client;
-		this.get = new HttpGet(url.toString());
-		this.get.setHeader("Range", "bytes=" + local + "-");
-		HttpResponse response = this.client.execute(get);
-		HttpEntity entity = response.getEntity();
-		content = entity.getContent();
-		this.raf = new SeekBufferedInputStream(content);
-	}
-
-	/*---- Methods ----*/
-
-	public long getLength() {
-		try {
-			return raf.available();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    // The underlying byte-based input stream to read from.
+    private BufferedInputStream raf;
+    private final HttpGet get;
+    private final HttpClient client;
+    private InputStream content;
+    private long local;
 
 
-	public void seekTo(long pos) {
-		raf.seek(pos);
-		positionChanged(pos);
-	}
+    /*---- Constructors ----*/
 
+    public SeekableFileFlacInput(HttpClient client, URL url) throws Exception {
+        super();
+        this.client = client;
+        this.get = new HttpGet(url.toString());
+        this.get.setHeader("Range", "bytes=" + local + "-");
+        HttpResponse response = this.client.execute(get);
+        HttpEntity entity = response.getEntity();
+        content = entity.getContent();
+        this.raf = new BufferedInputStream(content);
+    }
 
-	protected int readUnderlying(byte[] buf, int off, int len) throws IOException {
-		try {
-			int temp = raf.read(buf, off, len);
-			local += temp;
-			return temp;
-		} catch (ConnectionClosedException | SocketException ex) {
-			this.get.setHeader("Range", "bytes=" + local + "-");
-			HttpResponse response = this.client.execute(get);
-			HttpEntity entity = response.getEntity();
-			content = entity.getContent();
-			this.raf = new SeekBufferedInputStream(content);
-			return readUnderlying(buf, off, len);
-		}
-	}
+    /*---- Methods ----*/
 
-	// Closes the underlying RandomAccessFile stream (very important).
-	public void close() throws IOException {
-		get.abort();
-		if (raf != null) {
-			raf.close();
-			raf = null;
-			super.close();
-		}
-	}
+    public long getLength() {
+        try {
+            return raf.available();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected int readUnderlying(byte[] buf, int off, int len) throws IOException {
+        try {
+            int temp = raf.read(buf, off, len);
+            local += temp;
+            return temp;
+        } catch (ConnectionClosedException | SocketException ex) {
+            this.get.setHeader("Range", "bytes=" + local + "-");
+            HttpResponse response = this.client.execute(get);
+            HttpEntity entity = response.getEntity();
+            content = entity.getContent();
+            this.raf = new BufferedInputStream(content);
+            return readUnderlying(buf, off, len);
+        }
+    }
+
+    // Closes the underlying RandomAccessFile stream (very important).
+    public void close() throws IOException {
+        get.abort();
+        if (raf != null) {
+            raf.close();
+            raf = null;
+            super.close();
+        }
+    }
 }
