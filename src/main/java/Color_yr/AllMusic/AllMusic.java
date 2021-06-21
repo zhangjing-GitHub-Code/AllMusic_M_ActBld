@@ -1,8 +1,7 @@
 package Color_yr.AllMusic;
 
 import Color_yr.AllMusic.Hud.Hud;
-import Color_yr.AllMusic.player.IPlayer;
-import Color_yr.AllMusic.player.JAVA.JAVAPlayer;
+import Color_yr.AllMusic.player.APlayer;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.SoundCategory;
@@ -23,11 +22,11 @@ import java.nio.charset.StandardCharsets;
 @Mod(modid = AllMusic.MODID, version = AllMusic.VERSION, acceptedMinecraftVersions = "[1.12,)")
 public class AllMusic {
     static final String MODID = "allmusic";
-    static final String VERSION = "2.5.1";
+    static final String VERSION = "2.5.4";
     public static int v = -1;
     public static boolean isPlay = false;
     private static URL nowURL;
-    private IPlayer nowPlaying;
+    private APlayer nowPlaying;
     public static Logger logger;
 
     public final Thread thread = new Thread(() -> {
@@ -69,7 +68,7 @@ public class AllMusic {
     @Mod.EventHandler
     public void preload(final FMLPreInitializationEvent evt) {
         logger = evt.getModLog();
-        nowPlaying = new JAVAPlayer();
+        nowPlaying = new APlayer();
         MinecraftForge.EVENT_BUS.register(this);
         thread.start();
         NetworkRegistry.INSTANCE.newEventDrivenChannel("allmusic:channel").register(this);
