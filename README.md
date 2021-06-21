@@ -1,3 +1,4 @@
 # AllMusic-mod
-AllMusic配套mod  
-AllMusic插件：https://github.com/HeartAge/ALLmusic_BC
+[AllMusic](https://github.com/HeartAge/ALLmusic_P)配套mod  
+
+调节音量请调主音量和唱片音量
