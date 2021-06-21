@@ -1,10 +1,7 @@
 package Color_yr.AllMusic;
 
 import Color_yr.AllMusic.Hud.Hud;
-import Color_yr.AllMusic.Pack.GetPack;
-import Color_yr.AllMusic.Pack.IPacket;
-import Color_yr.AllMusic.player.IPlayer;
-import Color_yr.AllMusic.player.JAVA.JAVAPlayer;
+import Color_yr.AllMusic.player.APlayer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -13,10 +10,11 @@ import net.minecraft.util.Identifier;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class AllMusic implements ModInitializer {
     public static final Identifier ID = new Identifier("allmusic", "channel");
-    private static IPlayer nowPlaying;
+    private static APlayer nowPlaying;
     public static boolean isPlay = false;
     public static int v = -1;
     private static URL nowURL;
@@ -37,17 +35,6 @@ public class AllMusic implements ModInitializer {
             }
         }
     });
-
-    public static <T extends IPacket> void registerPacket(Identifier id, Class<T> packetClass) {
-        ClientSidePacketRegistry.INSTANCE.register(id, (context, buffer) -> {
-            try {
-                IPacket packet = packetClass.newInstance();
-                packet.read(buffer);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
 
     public static void onServerQuit() {
         stopPlaying();
@@ -124,8 +111,18 @@ public class AllMusic implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        nowPlaying = new JAVAPlayer();
-        registerPacket(ID, GetPack.class);
+        nowPlaying = new APlayer();
+        ClientSidePacketRegistry.INSTANCE.register(ID, (context, buffer) -> {
+            try {
+                byte[] buff = new byte[buffer.readableBytes()];
+                buffer.readBytes(buff);
+                buff[0] = 0;
+                String data = new String(buff, StandardCharsets.UTF_8).substring(1);
+                AllMusic.onClicentPacket(data);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         thread.start();
     }
 }
