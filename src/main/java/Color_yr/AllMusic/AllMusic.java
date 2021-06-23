@@ -8,6 +8,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -66,11 +67,15 @@ public class AllMusic {
     }
 
     @Mod.EventHandler
+    public void test(final FMLPostInitializationEvent event) {
+        nowPlaying = new APlayer();
+        thread.start();
+    }
+
+    @Mod.EventHandler
     public void preload(final FMLPreInitializationEvent evt) {
         logger = evt.getModLog();
-        nowPlaying = new APlayer();
         MinecraftForge.EVENT_BUS.register(this);
-        thread.start();
         NetworkRegistry.INSTANCE.newEventDrivenChannel("allmusic:channel").register(this);
     }
 
@@ -79,7 +84,7 @@ public class AllMusic {
         if (!isPlay)
             return;
         SoundCategory data = e.getSound().getCategory();
-        if(data == null)
+        if (data == null)
             return;
         switch (data) {
             case MUSIC:

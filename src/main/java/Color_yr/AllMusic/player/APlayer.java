@@ -25,11 +25,19 @@ import Color_yr.AllMusic.player.decoder.IDecoder;
 import Color_yr.AllMusic.player.decoder.flac.DataFormatException;
 import Color_yr.AllMusic.player.decoder.flac.FlacDecoder;
 import Color_yr.AllMusic.player.decoder.mp3.Mp3Decoder;
+import io.netty.util.internal.ThreadLocalRandom;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.client.audio.SoundManager;
+import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import paulscode.sound.SoundSystem;
 
-import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.AudioFormat;
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * The <code>Player</code> class implements a simple player for playback
@@ -44,14 +52,17 @@ import java.net.URL;
 public class APlayer {
 
     private HttpClient client;
-    private SoundAudioDevice audio;
     private IDecoder decoder;
     private boolean isClose;
+    private SoundSystem sndSystem;
+    private String s;
 
     public APlayer() {
         try {
+            SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
+            SoundManager soundManager = ObfuscationReflectionHelper.getPrivateValue(SoundHandler.class, handler, "field_147694_f");
+            sndSystem = ObfuscationReflectionHelper.getPrivateValue(SoundManager.class, soundManager, "field_148620_e");
             client = HttpClientBuilder.create().useSystemProperties().build();
-            audio = new SoundAudioDevice();
             isClose = true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,19 +78,21 @@ public class APlayer {
                 decoder = new Mp3Decoder();
                 decoder.set(client, url);
             }
-            audio.open(decoder);
+            if (s != null) {
+                sndSystem.removeSource(s);
+            }
+            s = MathHelper.getRandomUUID(ThreadLocalRandom.current()).toString();
+            sndSystem.rawDataStream(new AudioFormat(decoder.getOutputFrequency(),
+                    16,
+                    decoder.getOutputChannels(),
+                    true,
+                    false), true, s, 0, 0, 0, 0, 16f);
             isClose = false;
         }
     }
 
     public void Set(int a) {
-        if (audio == null)
-            return;
-        FloatControl temp = audio.getVolctrl();
-        if (temp != null) {
-            float temp1 = (a == 0) ? -80.0f : ((float) (a * 0.2 - 35.0));
-            temp.setValue(temp1);
-        }
+
     }
 
     public void play() throws Exception {
@@ -96,14 +109,10 @@ public class APlayer {
         isClose = true;
         if (decoder != null)
             decoder.close();
-        if (audio != null)
-            audio.close();
     }
 
     protected boolean decodeFrame() {
         try {
-            if (audio == null)
-                return false;
             if (isClose)
                 return false;
 
@@ -112,9 +121,7 @@ public class APlayer {
                 return false;
 
             synchronized (this) {
-                if (audio != null && !isClose) {
-                    audio.write(output.buff, output.len);
-                }
+                sndSystem.feedRawAudioData(s, Arrays.copyOf(output.buff, output.len));
             }
 
         } catch (Exception e) {
