@@ -30,21 +30,6 @@ public class AllMusic {
     private APlayer nowPlaying;
     public static Logger logger;
 
-    public final Thread thread = new Thread(() -> {
-        while (true) {
-            try {
-                int nowV = (int) (Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS) *
-                        Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MASTER) * 100);
-                if (v != nowV) {
-                    nowPlaying.Set(nowV);
-                }
-                Thread.sleep(100);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    });
-
     public static URL Get(URL url) {
         if (url.toString().contains("https://music.163.com/song/media/outer/url?id=")
                 || url.toString().contains("http://music.163.com/song/media/outer/url?id=")) {
@@ -69,7 +54,6 @@ public class AllMusic {
     @Mod.EventHandler
     public void test(final FMLPostInitializationEvent event) {
         nowPlaying = new APlayer();
-        thread.start();
     }
 
     @Mod.EventHandler
