@@ -81,7 +81,7 @@ public class APlayer {
                     } else if (audioformat.getSampleSizeInBits() == 16) {
                         soundFormat = AL10.AL_FORMAT_MONO16;
                     } else {
-                        return;
+                        break;
                     }
                 } else if (audioformat.getChannels() == 2) {
                     if (audioformat.getSampleSizeInBits() == 8) {
@@ -89,10 +89,10 @@ public class APlayer {
                     } else if (audioformat.getSampleSizeInBits() == 16) {
                         soundFormat = AL10.AL_FORMAT_STEREO16;
                     } else {
-                        return;
+                        break;
                     }
                 } else {
-                    return;
+                    break;
                 }
 
                 AL10.alBufferData(intBuffer.get(0), soundFormat, byteBuffer, (int) audioformat.getSampleRate());
@@ -109,6 +109,11 @@ public class APlayer {
                 break;
             }
         }
+        if (!isClose)
+            if (decoder != null) {
+                decoder.close();
+                decoder = null;
+            }
         while (AL10.alGetSourcei(index,
                 AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING) {
             Thread.sleep(10);
