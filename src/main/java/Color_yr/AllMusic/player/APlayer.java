@@ -24,17 +24,11 @@ public class APlayer {
     private HttpClient client;
     private IDecoder decoder;
     private boolean isClose;
-    private ChannelManager sndSystem;
-    private ChannelManager.Entry channelmanager;
     private AudioFormat audioformat;
     private int index;
-    private boolean init;
 
     public APlayer() {
         try {
-            SoundHandler handler = Minecraft.getInstance().getSoundHandler();
-            SoundEngine soundManager = ObfuscationReflectionHelper.getPrivateValue(SoundHandler.class, handler, "field_147694_f");
-            sndSystem = ObfuscationReflectionHelper.getPrivateValue(SoundEngine.class, soundManager, "field_217941_k");
             client = HttpClientBuilder.create().useSystemProperties().build();
             isClose = true;
         } catch (Exception e) {
@@ -56,14 +50,7 @@ public class APlayer {
                     decoder.getOutputChannels(),
                     true,
                     false);
-            if (channelmanager == null) {
-                channelmanager = sndSystem.createChannel(SoundSystem.Mode.STREAMING);
-                channelmanager.runOnSoundExecutor((ex) -> {
-                    index = ObfuscationReflectionHelper.getPrivateValue(SoundSource.class, ex, "field_216441_b");
-                    init = true;
-                });
-            }
-            while (!init) ;
+            index = AL10.alGenSources();
             isClose = false;
         }
     }
@@ -150,6 +137,7 @@ public class APlayer {
             AL10.alDeleteBuffers(temp);
             m_numqueued--;
         }
+        AL10.alDeleteSources(index);
         if (decoder != null)
             decoder.close();
     }
