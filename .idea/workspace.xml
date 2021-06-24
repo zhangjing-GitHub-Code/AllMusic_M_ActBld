@@ -22,12 +22,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="94041c39-fcfa-47db-874b-d1027d9a6a72" name="默认的" comment="默认的">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/AllMusic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/AllMusic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/Hud/Hud.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/Hud/Hud.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/APlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/APlayer.java" afterDir="false" />
-    </list>
+    <list default="true" id="94041c39-fcfa-47db-874b-d1027d9a6a72" name="默认的" comment="默认的" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -116,7 +111,7 @@
       <recent name="E:\java-src\AllMusic_M\src\main\java\Color_yr\AllMusic" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.AllMusic_M [runClient]">
+  <component name="RunManager" selected="Gradle.AllMusic_M [build]">
     <configuration name="AllMusic_M [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -223,8 +218,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.AllMusic_M [runClient]" />
         <item itemvalue="Gradle.AllMusic_M [build]" />
+        <item itemvalue="Gradle.AllMusic_M [runClient]" />
         <item itemvalue="Gradle.AllMusic_M [init]" />
         <item itemvalue="Gradle.AllMusic_M [clean]" />
       </list>
