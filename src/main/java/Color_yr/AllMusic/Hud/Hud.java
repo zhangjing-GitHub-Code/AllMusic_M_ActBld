@@ -1,6 +1,7 @@
 package Color_yr.AllMusic.Hud;
 
 import com.google.gson.Gson;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.opengl.GL11;
@@ -119,6 +120,7 @@ public class Hud {
             }
             if (save.isEnablePic() && haveImg) {
                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
+                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 GL11.glPushMatrix();
                 GL11.glTranslatef((float) save.getPic().getX(), (float) save.getPic().getY(), 0.0f);
                 GL11.glBegin(7);

@@ -29,7 +29,6 @@ public class AllMusic {
     private static APlayer nowPlaying;
     private static URL nowURL;
     public static boolean isPlay = false;
-    public static int v = -1;
 
     public AllMusic() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
