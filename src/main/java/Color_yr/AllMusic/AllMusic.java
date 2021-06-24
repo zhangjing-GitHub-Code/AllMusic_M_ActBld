@@ -16,25 +16,7 @@ public class AllMusic implements ModInitializer {
     public static final Identifier ID = new Identifier("allmusic", "channel");
     private static APlayer nowPlaying;
     public static boolean isPlay = false;
-    public static int v = -1;
     private static URL nowURL;
-
-    public final Thread thread = new Thread(() -> {
-        while (true) {
-            try {
-                if (MinecraftClient.getInstance().options != null) {
-                    int nowV = (int) (MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.RECORDS) *
-                            MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.MASTER) * 100);
-                    if (v != nowV) {
-                        nowPlaying.Set(nowV);
-                    }
-                }
-                Thread.sleep(100);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    });
 
     public static void onServerQuit() {
         stopPlaying();
@@ -75,7 +57,7 @@ public class AllMusic implements ModInitializer {
                     stopPlaying();
                     nowURL = new URL(message.replace("[Play]", ""));
                     nowURL = Get(nowURL);
-                    if(nowURL == null)
+                    if (nowURL == null)
                         return;
                     nowPlaying.SetMusic(nowURL);
                     nowPlaying.play();
@@ -111,7 +93,6 @@ public class AllMusic implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        nowPlaying = new APlayer();
         ClientSidePacketRegistry.INSTANCE.register(ID, (context, buffer) -> {
             try {
                 byte[] buff = new byte[buffer.readableBytes()];
@@ -123,6 +104,6 @@ public class AllMusic implements ModInitializer {
                 e.printStackTrace();
             }
         });
-        thread.start();
+        nowPlaying = new APlayer();
     }
 }
