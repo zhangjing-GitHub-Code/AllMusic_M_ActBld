@@ -109,7 +109,8 @@ public class Mp3Decoder implements DecoderErrors, IDecoder {
     public BuffPack decodeFrame()
             throws Exception {
         Header header = bitstream.readFrame();
-
+        if(header == null)
+            return null;
         int layer = header.layer();
         output.clear_buffer();
         FrameDecoder decoder = retrieveDecoder(header, bitstream, layer);

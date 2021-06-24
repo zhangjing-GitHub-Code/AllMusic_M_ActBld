@@ -48,9 +48,6 @@ public class APlayer {
                 decoder = new Mp3Decoder();
                 decoder.set(client, url);
             }
-            if (s != null) {
-                sndSystem.removeSource(s);
-            }
             s = MathHelper.getRandomUUID(ThreadLocalRandom.current()).toString();
             sndSystem.rawDataStream(new AudioFormat(decoder.getOutputFrequency(),
                     16,
@@ -61,45 +58,39 @@ public class APlayer {
         }
     }
 
-    public void Set(int a) {
-
-    }
-
     public void play() throws Exception {
-        boolean ret = true;
-        while (ret) {
-            ret = decodeFrame();
+        while (true) {
+            try {
+                if (isClose)
+                    break;
+
+                BuffPack output = decoder.decodeFrame();
+                if (output == null)
+                    break;
+
+                sndSystem.feedRawAudioData(s, Arrays.copyOf(output.buff, output.len));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                break;
+            }
         }
-        synchronized (this) {
+        while (true) {
+            if (isClose || !sndSystem.playing(s))
+                break;
+            Thread.sleep(10);
+        }
+        if (!isClose)
             close();
-        }
     }
 
     public void close() throws Exception {
         isClose = true;
-        sndSystem.removeSource(s);
-        s = null;
+        if(s!=null) {
+            sndSystem.stop(s);
+            sndSystem.removeSource(s);
+        }
         if (decoder != null)
             decoder.close();
-    }
-
-    protected boolean decodeFrame() {
-        try {
-            if (isClose)
-                return false;
-
-            BuffPack output = decoder.decodeFrame();
-            if (output == null)
-                return false;
-
-            synchronized (this) {
-                sndSystem.feedRawAudioData(s, Arrays.copyOf(output.buff, output.len));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
     }
 }
