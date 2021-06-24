@@ -23,7 +23,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94041c39-fcfa-47db-874b-d1027d9a6a72" name="默认的" comment="默认的">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/AllMusic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/AllMusic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/APlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/APlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/AudioFormatSelf.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/SoundAudioDevice.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/FlacDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/FlacDecoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/Mp3Decoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/Mp3Decoder.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +67,12 @@
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="build" type="c8890929:TasksNode$1" />
               </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="AllMusic_M" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="fg_runs" type="c8890929:TasksNode$1" />
+              </path>
             </expand>
             <select />
           </tree_state>
@@ -88,6 +102,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.intellij.openapi.externalSystem.service.settings.ExternalSystemGroupConfigurable" value="SELECTIVE" />
@@ -106,7 +121,7 @@
       <recent name="E:\java-src\AllMusic_M\src\main\java\Color_yr\AllMusic" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.AllMusic_M [build]">
+  <component name="RunManager" selected="Gradle.AllMusic_M [runClient]">
     <configuration name="AllMusic_M [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -213,10 +228,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.AllMusic_M [runClient]" />
         <item itemvalue="Gradle.AllMusic_M [build]" />
         <item itemvalue="Gradle.AllMusic_M [init]" />
         <item itemvalue="Gradle.AllMusic_M [clean]" />
-        <item itemvalue="Gradle.AllMusic_M [runClient]" />
       </list>
     </recent_temporary>
   </component>
@@ -266,5 +281,8 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/AllMusic_M$AllMusic_M__runClient_.ic" NAME="AllMusic_M [runClient] 覆盖结果" MODIFIED="1624508671127" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>
