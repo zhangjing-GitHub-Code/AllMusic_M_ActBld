@@ -1,8 +1,6 @@
 package Color_yr.AllMusic;
 
 import Color_yr.AllMusic.Hud.Hud;
-import Color_yr.AllMusic.Pack.GetPack;
-import Color_yr.AllMusic.Pack.IPacket;
 import Color_yr.AllMusic.player.APlayer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -12,10 +10,11 @@ import net.minecraft.util.Identifier;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class AllMusic implements ModInitializer {
     public static final Identifier ID = new Identifier("allmusic", "channel");
-    private static final APlayer nowPlaying = new APlayer();
+    private static APlayer nowPlaying;
     public static boolean isPlay = false;
     private static URL nowURL;
 
@@ -96,11 +95,15 @@ public class AllMusic implements ModInitializer {
     public void onInitialize() {
         ClientSidePacketRegistry.INSTANCE.register(ID, (context, buffer) -> {
             try {
-                IPacket packet = packetClass.newInstance();
-                packet.read(buffer);
+                byte[] buff = new byte[buffer.readableBytes()];
+                buffer.readBytes(buff);
+                buff[0] = 0;
+                String data = new String(buff, StandardCharsets.UTF_8).substring(1);
+                onClicentPacket(data);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
+        nowPlaying = new APlayer();
     }
 }

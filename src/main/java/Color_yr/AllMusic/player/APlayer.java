@@ -65,7 +65,7 @@ public class APlayer {
 
                 // Stream buffers can only be queued for streaming sources:
 
-                ByteBuffer byteBuffer = BufferUtils.createByteBuffer(
+                ByteBuffer byteBuffer = (ByteBuffer) BufferUtils.createByteBuffer(
                         output.len).put(output.buff, 0, output.len).flip();
 
                 IntBuffer intBuffer;
