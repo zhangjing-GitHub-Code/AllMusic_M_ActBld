@@ -5,33 +5,28 @@ import Color_yr.AllMusic.player.decoder.IDecoder;
 import Color_yr.AllMusic.player.decoder.flac.DataFormatException;
 import Color_yr.AllMusic.player.decoder.flac.FlacDecoder;
 import Color_yr.AllMusic.player.decoder.mp3.Mp3Decoder;
-import io.netty.util.internal.ThreadLocalRandom;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.audio.SoundManager;
-import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraft.util.SoundCategory;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import paulscode.sound.SoundSystem;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.openal.AL10;
 
 import javax.sound.sampled.AudioFormat;
 import java.net.URL;
-import java.util.Arrays;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 public class APlayer {
 
     private HttpClient client;
     private IDecoder decoder;
     private boolean isClose;
-    private SoundSystem sndSystem;
-    private String s;
+    private AudioFormat audioformat;
+    private int index;
 
     public APlayer() {
         try {
-            SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
-            SoundManager soundManager = ObfuscationReflectionHelper.getPrivateValue(SoundHandler.class, handler, "field_147694_f");
-            sndSystem = ObfuscationReflectionHelper.getPrivateValue(SoundManager.class, soundManager, "field_148620_e");
             client = HttpClientBuilder.create().useSystemProperties().build();
             isClose = true;
         } catch (Exception e) {
@@ -48,12 +43,12 @@ public class APlayer {
                 decoder = new Mp3Decoder();
                 decoder.set(client, url);
             }
-            s = MathHelper.getRandomUUID(ThreadLocalRandom.current()).toString();
-            sndSystem.rawDataStream(new AudioFormat(decoder.getOutputFrequency(),
+            audioformat = new AudioFormat(decoder.getOutputFrequency(),
                     16,
                     decoder.getOutputChannels(),
                     true,
-                    false), true, s, 0, 0, 0, 0, 16f);
+                    false);
+            index = AL10.alGenSources();
             isClose = false;
         }
     }
@@ -68,16 +63,59 @@ public class APlayer {
                 if (output == null)
                     break;
 
-                sndSystem.feedRawAudioData(s, Arrays.copyOf(output.buff, output.len));
+                // Stream buffers can only be queued for streaming sources:
+
+                ByteBuffer byteBuffer = (ByteBuffer) BufferUtils.createByteBuffer(
+                        output.len).put(output.buff, 0, output.len).flip();
+
+                IntBuffer intBuffer;
+
+                // Clear out any previously queued buffers:
+                intBuffer = BufferUtils.createIntBuffer(1);
+                AL10.alGenBuffers(intBuffer);
+
+                int soundFormat = 0;
+                if (audioformat.getChannels() == 1) {
+                    if (audioformat.getSampleSizeInBits() == 8) {
+                        soundFormat = AL10.AL_FORMAT_MONO8;
+                    } else if (audioformat.getSampleSizeInBits() == 16) {
+                        soundFormat = AL10.AL_FORMAT_MONO16;
+                    } else {
+                        break;
+                    }
+                } else if (audioformat.getChannels() == 2) {
+                    if (audioformat.getSampleSizeInBits() == 8) {
+                        soundFormat = AL10.AL_FORMAT_STEREO8;
+                    } else if (audioformat.getSampleSizeInBits() == 16) {
+                        soundFormat = AL10.AL_FORMAT_STEREO16;
+                    } else {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+
+                AL10.alBufferData(intBuffer.get(0), soundFormat, byteBuffer, (int) audioformat.getSampleRate());
+
+                AL10.alSourceQueueBuffers(index, intBuffer);
+                AL10.alSourcef(index, AL10.AL_GAIN, Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MASTER));
+                if (AL10.alGetSourcei(index,
+                        AL10.AL_SOURCE_STATE) != AL10.AL_PLAYING) {
+                    AL10.alSourcePlay(index);
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
                 break;
             }
         }
-        while (true) {
-            if (isClose || !sndSystem.playing(s))
-                break;
+        if (!isClose)
+            if (decoder != null) {
+                decoder.close();
+                decoder = null;
+            }
+        while (AL10.alGetSourcei(index,
+                AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING) {
             Thread.sleep(10);
         }
         if (!isClose)
@@ -86,10 +124,14 @@ public class APlayer {
 
     public void close() throws Exception {
         isClose = true;
-        if(s!=null) {
-            sndSystem.stop(s);
-            sndSystem.removeSource(s);
+        AL10.alSourceStop(index);
+        int m_numqueued = AL10.alGetSourcei(index, AL10.AL_BUFFERS_QUEUED);
+        while (m_numqueued > 0) {
+            int temp = AL10.alSourceUnqueueBuffers(index);
+            AL10.alDeleteBuffers(temp);
+            m_numqueued--;
         }
+        AL10.alDeleteSources(index);
         if (decoder != null)
             decoder.close();
     }

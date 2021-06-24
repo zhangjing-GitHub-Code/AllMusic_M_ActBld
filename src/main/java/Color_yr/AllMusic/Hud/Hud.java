@@ -69,7 +69,7 @@ public class Hud {
 
                 byteBuffer.flip();
                 inputStream.close();
-
+                Thread.sleep(500);
                 FMLClientHandler.instance().getClient().addScheduledTask(() -> {
                     GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
                     GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, byteBuffer);
@@ -122,6 +122,7 @@ public class Hud {
                 }
                 if (save.isEnablePic() && haveImg) {
                     GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
+                    GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                     GL11.glPushMatrix();
                     GL11.glTranslatef((float) save.getPic().getX(), (float) save.getPic().getY(), 0.0f);
                     GL11.glBegin(7);
