@@ -5,48 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dd1594ed-4b8b-4386-b4dc-7693e244bb03" name="默认变更列表" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/AllMusic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/AllMusic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/APlayer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/AudioFormatSelf.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/SoundAudioDevice.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/BuffPack.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/IDecoder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/AbstractFlacLowLevelInput.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/ByteArrayFlacInput.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/DataFormatException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/FlacDecoder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/FlacLowLevelInput.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/FrameDecoder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/FrameInfo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/SeekTable.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/SeekableFileFlacInput.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/StreamInfo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/BitReserve.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/Bitstream.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/BitstreamErrors.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/BitstreamException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/Crc16.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/DecoderErrors.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/DecoderException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/Equalizer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/FrameDecoder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/Header.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/JavaLayerErrors.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/JavaLayerException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/JavaLayerHook.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/JavaLayerUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/LayerIDecoder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/LayerIIDecoder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/LayerIIIDecoder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/Mp3Decoder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/Obuffer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/OutputChannels.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/SampleBuffer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/SynthesisFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/huffcodetab.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/APlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/APlayer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,17 +30,6 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="AllMusic_M" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="AllMusic_M" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="AllMusic_M" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />

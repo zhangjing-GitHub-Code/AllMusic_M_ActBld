@@ -65,23 +65,14 @@ public class APlayer {
 
                 // Stream buffers can only be queued for streaming sources:
 
-                ByteBuffer byteBuffer = (ByteBuffer) BufferUtils.createByteBuffer(
+                ByteBuffer byteBuffer = BufferUtils.createByteBuffer(
                         output.len).put(output.buff, 0, output.len).flip();
 
                 IntBuffer intBuffer;
 
                 // Clear out any previously queued buffers:
-                int processed = AL10.alGetSourcei(index,
-                        AL10.AL_BUFFERS_PROCESSED);
-                if (processed > 0) {
-                    intBuffer = BufferUtils.createIntBuffer(processed);
-                    AL10.alGenBuffers(intBuffer);
-                    AL10.alSourceUnqueueBuffers(index, intBuffer);
-                    AL10.alIsBuffer(intBuffer.get(0));
-                } else {
-                    intBuffer = BufferUtils.createIntBuffer(1);
-                    AL10.alGenBuffers(intBuffer);
-                }
+                intBuffer = BufferUtils.createIntBuffer(1);
+                AL10.alGenBuffers(intBuffer);
 
                 int soundFormat = 0;
                 if (audioformat.getChannels() == 1) {
