@@ -4,7 +4,50 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dd1594ed-4b8b-4386-b4dc-7693e244bb03" name="默认变更列表" comment="" />
+    <list default="true" id="dd1594ed-4b8b-4386-b4dc-7693e244bb03" name="默认变更列表" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/AllMusic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/AllMusic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/APlayer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/AudioFormatSelf.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/SoundAudioDevice.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/BuffPack.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/IDecoder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/AbstractFlacLowLevelInput.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/ByteArrayFlacInput.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/DataFormatException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/FlacDecoder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/FlacLowLevelInput.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/FrameDecoder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/FrameInfo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/SeekTable.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/SeekableFileFlacInput.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/flac/StreamInfo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/BitReserve.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/Bitstream.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/BitstreamErrors.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/BitstreamException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/Crc16.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/DecoderErrors.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/DecoderException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/Equalizer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/FrameDecoder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/Header.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/JavaLayerErrors.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/JavaLayerException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/JavaLayerHook.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/JavaLayerUtils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/LayerIDecoder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/LayerIIDecoder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/LayerIIIDecoder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/Mp3Decoder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/Obuffer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/OutputChannels.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/SampleBuffer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/SynthesisFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Color_yr/AllMusic/player/decoder/mp3/huffcodetab.java" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -80,6 +123,7 @@
       <recent name="E:\java-src\AllMusic_M\src\main\java\Color_yr\AllMusic\player\decoder\flac" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\java-src\AllMusic_M\src\main\java\Color_yr\AllMusic" />
       <recent name="E:\java-src\AllMusic_M\src\main\resources\Color_yr\AllMusic\player\decoder" />
     </key>
   </component>
@@ -175,5 +219,8 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/AllMusic_M$AllMusic_M__runClient_.ic" NAME="AllMusic_M [runClient] 覆盖结果" MODIFIED="1624508671127" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>
