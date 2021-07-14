@@ -95,7 +95,7 @@ public class Hud {
 
     public static void update() {
         var hud = MinecraftClient.getInstance().inGameHud;
-        var textRenderer = hud.getFontRenderer();
+        var textRenderer = hud.getTextRenderer();
         if (save == null)
             return;
         synchronized (lock) {
