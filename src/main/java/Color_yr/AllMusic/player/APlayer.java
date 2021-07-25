@@ -14,6 +14,7 @@ import org.lwjgl.openal.AL10;
 
 import javax.sound.sampled.AudioFormat;
 import java.net.URL;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -65,8 +66,9 @@ public class APlayer {
 
                 // Stream buffers can only be queued for streaming sources:
 
-                ByteBuffer byteBuffer = (ByteBuffer) BufferUtils.createByteBuffer(
-                        output.len).put(output.buff, 0, output.len).flip();
+                ByteBuffer byteBuffer = BufferUtils.createByteBuffer(
+                        output.len).put(output.buff, 0, output.len);
+                ((Buffer) byteBuffer).flip();
 
                 IntBuffer intBuffer;
 
