@@ -3,6 +3,7 @@ package Color_yr.AllMusic.Hud;
 import com.google.gson.Gson;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.opengl.GL11;
@@ -14,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 public class Hud {
@@ -65,11 +67,11 @@ public class Hud {
                     }
                 }
 
-                byteBuffer.flip();
+                ((Buffer) byteBuffer).flip();
                 inputStream.close();
                 Thread.sleep(500);
                 Minecraft.getInstance().execute(() -> {
-                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
+                    GlStateManager._bindTexture(textureID);
                     GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, byteBuffer);
 
                     GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
@@ -122,8 +124,8 @@ public class Hud {
                 }
             }
             if (save.isEnablePic() && haveImg) {
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager._bindTexture(textureID);
+                RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 GL11.glPushMatrix();
                 GL11.glTranslatef((float) save.getPic().getX(), (float) save.getPic().getY(), 0.0f);
                 GL11.glBegin(7);
@@ -137,7 +139,8 @@ public class Hud {
                 GL11.glVertex3f((float) 70, 0.0f, 0.0f);
                 GL11.glEnd();
                 GL11.glPopMatrix();
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+                RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                RenderSystem.enableAlphaTest();
             }
         }
     }
