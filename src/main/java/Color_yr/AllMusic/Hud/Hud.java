@@ -1,8 +1,11 @@
 package Color_yr.AllMusic.Hud;
 
 import com.google.gson.Gson;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.opengl.GL11;
@@ -25,8 +28,6 @@ public class Hud {
     private static ByteBuffer byteBuffer;
     private static final int textureID;
     public static boolean haveImg;
-
-    private static final MatrixStack stack = new MatrixStack();
 
     static {
         textureID = GL11.glGenTextures();
@@ -75,7 +76,7 @@ public class Hud {
                 inputStream.close();
                 Thread.sleep(500);
                 MinecraftClient.getInstance().execute(() -> {
-                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
+                    GlStateManager.bindTexture(textureID);
                     GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, byteBuffer);
 
                     GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
@@ -89,7 +90,7 @@ public class Hud {
         }
     }
 
-    public static void update() {
+    public static void update(MatrixStack stack) {
         InGameHud hud = MinecraftClient.getInstance().inGameHud;
         TextRenderer textRenderer = hud.getFontRenderer();
         if (save == null)
@@ -123,22 +124,11 @@ public class Hud {
                 }
             }
             if (save.isEnablePic() && haveImg) {
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
-                GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-                GL11.glPushMatrix();
-                GL11.glTranslatef((float) save.getPic().getX(), (float) save.getPic().getY(), 0.0f);
-                GL11.glBegin(7);
-                GL11.glTexCoord2f(0.0f, 0.0f);
-                GL11.glVertex3f(0.0f, 0.0f, 0.0f);
-                GL11.glTexCoord2f(0.0f, 1.0f);
-                GL11.glVertex3f(0.0f, (float) 70, 0.0f);
-                GL11.glTexCoord2f(1.0f, 1.0f);
-                GL11.glVertex3f((float) 70, (float) 70, 0.0f);
-                GL11.glTexCoord2f(1.0f, 0.0f);
-                GL11.glVertex3f((float) 70, 0.0f, 0.0f);
-                GL11.glEnd();
-                GL11.glPopMatrix();
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+                GlStateManager.bindTexture(textureID);
+                RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                DrawableHelper.drawTexture(stack, save.getPic().getX(),save.getPic().getY(), 0, 0, 0, 70, 70, 70,70);
+                RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                RenderSystem.enableAlphaTest();
             }
         }
     }
