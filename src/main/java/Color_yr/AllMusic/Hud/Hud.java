@@ -1,6 +1,7 @@
 package Color_yr.AllMusic.Hud;
 
 import com.google.gson.Gson;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -13,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 public class Hud {
@@ -65,7 +67,7 @@ public class Hud {
                     }
                 }
 
-                byteBuffer.flip();
+                ((Buffer) byteBuffer).flip();
                 inputStream.close();
                 Thread.sleep(500);
                 MinecraftClient.getInstance().execute(() -> {
@@ -132,6 +134,9 @@ public class Hud {
             GL11.glEnd();
             GL11.glPopMatrix();
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.disableLighting();
+            GlStateManager.enableAlphaTest();
         }
     }
 }

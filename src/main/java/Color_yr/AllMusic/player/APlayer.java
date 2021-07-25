@@ -1,5 +1,6 @@
 package Color_yr.AllMusic.player;
 
+import Color_yr.AllMusic.AllMusic;
 import Color_yr.AllMusic.player.decoder.BuffPack;
 import Color_yr.AllMusic.player.decoder.IDecoder;
 import Color_yr.AllMusic.player.decoder.flac.DataFormatException;
@@ -14,6 +15,7 @@ import org.lwjgl.openal.AL10;
 
 import javax.sound.sampled.AudioFormat;
 import java.net.URL;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -54,6 +56,7 @@ public class APlayer {
     }
 
     public void play() throws Exception {
+        AllMusic.isPlay = true;
         while (true) {
             try {
                 if (isClose)
@@ -66,7 +69,8 @@ public class APlayer {
                 // Stream buffers can only be queued for streaming sources:
 
                 ByteBuffer byteBuffer = BufferUtils.createByteBuffer(
-                        output.len).put(output.buff, 0, output.len).flip();
+                        output.len).put(output.buff, 0, output.len);
+                ((Buffer) byteBuffer).flip();
 
                 IntBuffer intBuffer;
 
@@ -134,5 +138,6 @@ public class APlayer {
         AL10.alDeleteSources(index);
         if (decoder != null)
             decoder.close();
+        AllMusic.isPlay = false;
     }
 }
