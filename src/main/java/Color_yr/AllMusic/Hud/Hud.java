@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 public class Hud {
@@ -67,7 +68,7 @@ public class Hud {
                     }
                 }
 
-                byteBuffer.flip();
+                ((Buffer) byteBuffer).flip();
                 inputStream.close();
                 Thread.sleep(500);
                 FMLClientHandler.instance().getClient().addScheduledTask(() -> {
