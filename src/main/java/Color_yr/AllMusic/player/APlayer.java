@@ -102,7 +102,6 @@ public class APlayer {
                 AL10.alBufferData(intBuffer.get(0), soundFormat, byteBuffer, (int) audioformat.getSampleRate());
 
                 AL10.alSourceQueueBuffers(index, intBuffer);
-                AL10.alSourcef(index, AL10.AL_GAIN, Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
                 if (AL10.alGetSourcei(index,
                         AL10.AL_SOURCE_STATE) != AL10.AL_PLAYING) {
                     AL10.alSourcePlay(index);
@@ -120,6 +119,7 @@ public class APlayer {
             }
         while (AL10.alGetSourcei(index,
                 AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING) {
+            AL10.alSourcef(index, AL10.AL_GAIN, Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
             Thread.sleep(10);
         }
         if (!isClose)
