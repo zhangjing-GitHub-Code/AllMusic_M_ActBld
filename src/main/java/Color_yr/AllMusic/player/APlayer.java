@@ -102,7 +102,7 @@ public class APlayer {
                 AL10.alBufferData(intBuffer.get(0), soundFormat, byteBuffer, (int) audioformat.getSampleRate());
 
                 AL10.alSourceQueueBuffers(index, intBuffer);
-                AL10.alSourcef(index, AL10.AL_GAIN, Minecraft.getInstance().options.getSoundSourceVolume(SoundCategory.MASTER));
+                AL10.alSourcef(index, AL10.AL_GAIN, Minecraft.getInstance().options.getSoundSourceVolume(SoundCategory.RECORDS));
                 if (AL10.alGetSourcei(index,
                         AL10.AL_SOURCE_STATE) != AL10.AL_PLAYING) {
                     AL10.alSourcePlay(index);
