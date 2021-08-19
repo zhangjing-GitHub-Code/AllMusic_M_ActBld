@@ -18,17 +18,19 @@ import java.net.URL;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class APlayer {
 
     private HttpClient client;
-    private IDecoder decoder;
     private boolean isClose;
-    private AudioFormat audioformat;
-    private int index;
+    private final List<URL> urls = new ArrayList<>();
 
     public APlayer() {
         try {
+            Thread thread = new Thread(this::run);
+            thread.start();
             client = HttpClientBuilder.create().useSystemProperties().build();
             isClose = true;
         } catch (Exception e) {
@@ -36,111 +38,112 @@ public class APlayer {
         }
     }
 
-    public void SetMusic(URL url) throws Exception {
-        synchronized (this) {
-            try {
-                decoder = new FlacDecoder();
-                decoder.set(client, url);
-            } catch (DataFormatException e) {
-                decoder = new Mp3Decoder();
-                decoder.set(client, url);
-            }
-            audioformat = new AudioFormat(decoder.getOutputFrequency(),
-                    16,
-                    decoder.getOutputChannels(),
-                    true,
-                    false);
-            index = AL10.alGenSources();
-            isClose = false;
-        }
-    }
-
-    public void play() throws Exception {
-        synchronized (this) {
-            AllMusic.isPlay = true;
-            while (true) {
+    private void run() {
+        try {
+            if (urls.size() > 0) {
+                AllMusic.isPlay = true;
+                URL url = urls.remove(urls.size() - 1);
+                urls.clear();
+                IDecoder decoder;
                 try {
-                    if (isClose)
-                        break;
+                    decoder = new FlacDecoder();
+                    decoder.set(client, url);
+                } catch (DataFormatException e) {
+                    decoder = new Mp3Decoder();
+                    decoder.set(client, url);
+                }
+                AudioFormat audioformat = new AudioFormat(decoder.getOutputFrequency(),
+                        16,
+                        decoder.getOutputChannels(),
+                        true,
+                        false);
+                int index = AL10.alGenSources();
+                isClose = false;
+                while (true) {
+                    try {
+                        if (isClose)
+                            break;
 
-                    BuffPack output = decoder.decodeFrame();
-                    if (output == null)
-                        break;
+                        BuffPack output = decoder.decodeFrame();
+                        if (output == null)
+                            break;
 
-                    // Stream buffers can only be queued for streaming sources:
+                        ByteBuffer byteBuffer = BufferUtils.createByteBuffer(
+                                output.len).put(output.buff, 0, output.len);
+                        ((Buffer) byteBuffer).flip();
 
-                    ByteBuffer byteBuffer = BufferUtils.createByteBuffer(
-                            output.len).put(output.buff, 0, output.len);
-                    ((Buffer) byteBuffer).flip();
+                        IntBuffer intBuffer;
 
-                    IntBuffer intBuffer;
+                        intBuffer = BufferUtils.createIntBuffer(1);
+                        AL10.alGenBuffers(intBuffer);
 
-                    // Clear out any previously queued buffers:
-                    intBuffer = BufferUtils.createIntBuffer(1);
-                    AL10.alGenBuffers(intBuffer);
-
-                    int soundFormat = 0;
-                    if (audioformat.getChannels() == 1) {
-                        if (audioformat.getSampleSizeInBits() == 8) {
-                            soundFormat = AL10.AL_FORMAT_MONO8;
-                        } else if (audioformat.getSampleSizeInBits() == 16) {
-                            soundFormat = AL10.AL_FORMAT_MONO16;
+                        int soundFormat;
+                        if (audioformat.getChannels() == 1) {
+                            if (audioformat.getSampleSizeInBits() == 8) {
+                                soundFormat = AL10.AL_FORMAT_MONO8;
+                            } else if (audioformat.getSampleSizeInBits() == 16) {
+                                soundFormat = AL10.AL_FORMAT_MONO16;
+                            } else {
+                                break;
+                            }
+                        } else if (audioformat.getChannels() == 2) {
+                            if (audioformat.getSampleSizeInBits() == 8) {
+                                soundFormat = AL10.AL_FORMAT_STEREO8;
+                            } else if (audioformat.getSampleSizeInBits() == 16) {
+                                soundFormat = AL10.AL_FORMAT_STEREO16;
+                            } else {
+                                break;
+                            }
                         } else {
                             break;
                         }
-                    } else if (audioformat.getChannels() == 2) {
-                        if (audioformat.getSampleSizeInBits() == 8) {
-                            soundFormat = AL10.AL_FORMAT_STEREO8;
-                        } else if (audioformat.getSampleSizeInBits() == 16) {
-                            soundFormat = AL10.AL_FORMAT_STEREO16;
-                        } else {
-                            break;
+
+                        AL10.alBufferData(intBuffer.get(0), soundFormat, byteBuffer, (int) audioformat.getSampleRate());
+                        AL10.alSourcef(index, AL10.AL_GAIN, Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
+
+                        AL10.alSourceQueueBuffers(index, intBuffer);
+                        if (AL10.alGetSourcei(index,
+                                AL10.AL_SOURCE_STATE) != AL10.AL_PLAYING) {
+                            AL10.alSourcePlay(index);
                         }
-                    } else {
+                    } catch (Exception e) {
+                        e.printStackTrace();
                         break;
                     }
-
-                    AL10.alBufferData(intBuffer.get(0), soundFormat, byteBuffer, (int) audioformat.getSampleRate());
-                    AL10.alSourcef(index, AL10.AL_GAIN, Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
-
-                    AL10.alSourceQueueBuffers(index, intBuffer);
-                    if (AL10.alGetSourcei(index,
-                            AL10.AL_SOURCE_STATE) != AL10.AL_PLAYING) {
-                        AL10.alSourcePlay(index);
+                }
+                try {
+                    while (!isClose && AL10.alGetSourcei(index,
+                            AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING) {
+                        AL10.alSourcef(index, AL10.AL_GAIN, Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
+                        Thread.sleep(10);
                     }
-
+                    AL10.alSourceStop(index);
+                    int m_numqueued = AL10.alGetSourcei(index, AL10.AL_BUFFERS_QUEUED);
+                    while (m_numqueued > 0) {
+                        int temp = AL10.alSourceUnqueueBuffers(index);
+                        AL10.alDeleteBuffers(temp);
+                        m_numqueued--;
+                    }
+                    AL10.alDeleteSources(index);
+                    decoder.close();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    break;
                 }
+                AllMusic.isPlay = false;
+            } else {
+                Thread.sleep(50);
             }
-            if (decoder != null) {
-                decoder.close();
-            }
-            while (!isClose && AL10.alGetSourcei(index,
-                    AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING) {
-                AL10.alSourcef(index, AL10.AL_GAIN, Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
-                Thread.sleep(10);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (!isClose)
-            close();
     }
 
-    public void close() throws Exception {
+    public void SetMusic(URL url) {
+        urls.add(url);
         isClose = true;
-        synchronized (this) {
-            AL10.alSourceStop(index);
-            int m_numqueued = AL10.alGetSourcei(index, AL10.AL_BUFFERS_QUEUED);
-            while (m_numqueued > 0) {
-                int temp = AL10.alSourceUnqueueBuffers(index);
-                AL10.alDeleteBuffers(temp);
-                m_numqueued--;
-            }
-            AL10.alDeleteSources(index);
-            if (decoder != null)
-                decoder.close();
-            AllMusic.isPlay = false;
-        }
+    }
+
+    public void close() {
+        isClose = true;
     }
 }
