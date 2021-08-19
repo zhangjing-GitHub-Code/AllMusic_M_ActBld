@@ -67,43 +67,46 @@ public class APlayer {
 
                 // Stream buffers can only be queued for streaming sources:
 
-                ByteBuffer byteBuffer = BufferUtils.createByteBuffer(
-                        output.len).put(output.buff, 0, output.len).flip();
+                MinecraftClient.getInstance().execute(()->{
+                    ByteBuffer byteBuffer = BufferUtils.createByteBuffer(
+                            output.len).put(output.buff, 0, output.len).flip();
 
-                IntBuffer intBuffer;
+                    IntBuffer intBuffer;
 
-                // Clear out any previously queued buffers:
-                intBuffer = BufferUtils.createIntBuffer(1);
-                AL10.alGenBuffers(intBuffer);
+                    // Clear out any previously queued buffers:
+                    intBuffer = BufferUtils.createIntBuffer(1);
+                    AL10.alGenBuffers(intBuffer);
 
-                int soundFormat = 0;
-                if (audioformat.getChannels() == 1) {
-                    if (audioformat.getSampleSizeInBits() == 8) {
-                        soundFormat = AL10.AL_FORMAT_MONO8;
-                    } else if (audioformat.getSampleSizeInBits() == 16) {
-                        soundFormat = AL10.AL_FORMAT_MONO16;
+                    int soundFormat = 0;
+                    if (audioformat.getChannels() == 1) {
+                        if (audioformat.getSampleSizeInBits() == 8) {
+                            soundFormat = AL10.AL_FORMAT_MONO8;
+                        } else if (audioformat.getSampleSizeInBits() == 16) {
+                            soundFormat = AL10.AL_FORMAT_MONO16;
+                        } else {
+                            return;
+                        }
+                    } else if (audioformat.getChannels() == 2) {
+                        if (audioformat.getSampleSizeInBits() == 8) {
+                            soundFormat = AL10.AL_FORMAT_STEREO8;
+                        } else if (audioformat.getSampleSizeInBits() == 16) {
+                            soundFormat = AL10.AL_FORMAT_STEREO16;
+                        } else {
+                            return;
+                        }
                     } else {
-                        break;
+                        return;
                     }
-                } else if (audioformat.getChannels() == 2) {
-                    if (audioformat.getSampleSizeInBits() == 8) {
-                        soundFormat = AL10.AL_FORMAT_STEREO8;
-                    } else if (audioformat.getSampleSizeInBits() == 16) {
-                        soundFormat = AL10.AL_FORMAT_STEREO16;
-                    } else {
-                        break;
+
+                    AL10.alBufferData(intBuffer.get(0), soundFormat, byteBuffer, (int) audioformat.getSampleRate());
+                    AL10.alSourcef(index, AL10.AL_GAIN, MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.RECORDS));
+
+                    AL10.alSourceQueueBuffers(index, intBuffer);
+                    if (AL10.alGetSourcei(index,
+                            AL10.AL_SOURCE_STATE) != AL10.AL_PLAYING) {
+                        AL10.alSourcePlay(index);
                     }
-                } else {
-                    break;
-                }
-
-                AL10.alBufferData(intBuffer.get(0), soundFormat, byteBuffer, (int) audioformat.getSampleRate());
-
-                AL10.alSourceQueueBuffers(index, intBuffer);
-                if (AL10.alGetSourcei(index,
-                        AL10.AL_SOURCE_STATE) != AL10.AL_PLAYING) {
-                    AL10.alSourcePlay(index);
-                }
+                });
 
             } catch (Exception e) {
                 e.printStackTrace();
