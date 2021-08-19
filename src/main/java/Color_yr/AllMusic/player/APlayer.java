@@ -26,7 +26,6 @@ public class APlayer {
     private boolean isClose;
     private AudioFormat audioformat;
     private int index;
-    private Object object = new Object();
 
     public APlayer() {
         try {
@@ -72,10 +71,7 @@ public class APlayer {
 
                     ByteBuffer byteBuffer = BufferUtils.createByteBuffer(
                             output.len).put(output.buff, 0, output.len);
-                    if (byteBuffer instanceof ByteBuffer) {
-                        byteBuffer.flip();
-                    } else
-                        ((Buffer) byteBuffer).flip();
+                    ((Buffer) byteBuffer).flip();
 
                     IntBuffer intBuffer;
 
@@ -118,12 +114,10 @@ public class APlayer {
                     break;
                 }
             }
-            if (!isClose)
-                if (decoder != null) {
-                    decoder.close();
-                    decoder = null;
-                }
-            while (AL10.alGetSourcei(index,
+            if (decoder != null) {
+                decoder.close();
+            }
+            while (!isClose && AL10.alGetSourcei(index,
                     AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING) {
                 AL10.alSourcef(index, AL10.AL_GAIN, Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
                 Thread.sleep(10);
@@ -134,8 +128,8 @@ public class APlayer {
     }
 
     public void close() throws Exception {
+        isClose = true;
         synchronized (this) {
-            isClose = true;
             AL10.alSourceStop(index);
             int m_numqueued = AL10.alGetSourcei(index, AL10.AL_BUFFERS_QUEUED);
             while (m_numqueued > 0) {

@@ -41,7 +41,6 @@ public class Hud {
     }
 
     public static void SetImg(String picUrl) {
-
         if (picUrl != null) {
             try {
                 URL url = new URL(picUrl);
