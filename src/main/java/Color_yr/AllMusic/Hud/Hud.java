@@ -24,6 +24,7 @@ public class Hud {
     private static ByteBuffer byteBuffer;
     private static final int textureID;
     public static boolean haveImg;
+    private static boolean first;
 
     static {
         textureID = GL11.glGenTextures();
@@ -69,7 +70,11 @@ public class Hud {
 
                 ((Buffer) byteBuffer).flip();
                 inputStream.close();
-                Thread.sleep(500);
+                Thread.sleep(100);
+                if (first) {
+                    Thread.sleep(2000);
+                    first = false;
+                }
                 FMLClientHandler.instance().getClient().addScheduledTask(() -> {
                     GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
                     GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, byteBuffer);
