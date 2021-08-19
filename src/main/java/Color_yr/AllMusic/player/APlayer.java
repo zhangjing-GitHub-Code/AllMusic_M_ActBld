@@ -98,6 +98,7 @@ public class APlayer {
                 }
 
                 AL10.alBufferData(intBuffer.get(0), soundFormat, byteBuffer, (int) audioformat.getSampleRate());
+                AL10.alSourcef(index, AL10.AL_GAIN, MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.RECORDS));
 
                 AL10.alSourceQueueBuffers(index, intBuffer);
                 if (AL10.alGetSourcei(index,
