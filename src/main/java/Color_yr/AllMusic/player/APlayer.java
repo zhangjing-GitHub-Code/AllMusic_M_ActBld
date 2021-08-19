@@ -29,7 +29,7 @@ public class APlayer {
 
     public APlayer() {
         try {
-            Thread thread = new Thread(this::run);
+            Thread thread = new Thread(this::run, "allmusic_run");
             thread.start();
             client = HttpClientBuilder.create().useSystemProperties().build();
             isClose = true;
