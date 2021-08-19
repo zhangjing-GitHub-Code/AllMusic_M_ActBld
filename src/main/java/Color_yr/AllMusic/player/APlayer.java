@@ -26,6 +26,7 @@ public class APlayer {
     private boolean isClose;
     private AudioFormat audioformat;
     private int index;
+    private Object object = new Object();
 
     public APlayer() {
         try {
@@ -56,92 +57,96 @@ public class APlayer {
     }
 
     public void play() throws Exception {
-        AllMusic.isPlay = true;
-        while (true) {
-            try {
-                if (isClose)
-                    break;
+        synchronized (this) {
+            AllMusic.isPlay = true;
+            while (true) {
+                try {
+                    if (isClose)
+                        break;
 
-                BuffPack output = decoder.decodeFrame();
-                if (output == null)
-                    break;
+                    BuffPack output = decoder.decodeFrame();
+                    if (output == null)
+                        break;
 
-                // Stream buffers can only be queued for streaming sources:
+                    // Stream buffers can only be queued for streaming sources:
 
-                ByteBuffer byteBuffer = BufferUtils.createByteBuffer(
-                        output.len).put(output.buff, 0, output.len);
-                if (byteBuffer instanceof ByteBuffer) {
-                    byteBuffer.flip();
-                } else
-                    ((Buffer) byteBuffer).flip();
+                    ByteBuffer byteBuffer = BufferUtils.createByteBuffer(
+                            output.len).put(output.buff, 0, output.len);
+                    if (byteBuffer instanceof ByteBuffer) {
+                        byteBuffer.flip();
+                    } else
+                        ((Buffer) byteBuffer).flip();
 
-                IntBuffer intBuffer;
+                    IntBuffer intBuffer;
 
-                // Clear out any previously queued buffers:
-                intBuffer = BufferUtils.createIntBuffer(1);
-                AL10.alGenBuffers(intBuffer);
+                    // Clear out any previously queued buffers:
+                    intBuffer = BufferUtils.createIntBuffer(1);
+                    AL10.alGenBuffers(intBuffer);
 
-                int soundFormat = 0;
-                if (audioformat.getChannels() == 1) {
-                    if (audioformat.getSampleSizeInBits() == 8) {
-                        soundFormat = AL10.AL_FORMAT_MONO8;
-                    } else if (audioformat.getSampleSizeInBits() == 16) {
-                        soundFormat = AL10.AL_FORMAT_MONO16;
+                    int soundFormat = 0;
+                    if (audioformat.getChannels() == 1) {
+                        if (audioformat.getSampleSizeInBits() == 8) {
+                            soundFormat = AL10.AL_FORMAT_MONO8;
+                        } else if (audioformat.getSampleSizeInBits() == 16) {
+                            soundFormat = AL10.AL_FORMAT_MONO16;
+                        } else {
+                            break;
+                        }
+                    } else if (audioformat.getChannels() == 2) {
+                        if (audioformat.getSampleSizeInBits() == 8) {
+                            soundFormat = AL10.AL_FORMAT_STEREO8;
+                        } else if (audioformat.getSampleSizeInBits() == 16) {
+                            soundFormat = AL10.AL_FORMAT_STEREO16;
+                        } else {
+                            break;
+                        }
                     } else {
                         break;
                     }
-                } else if (audioformat.getChannels() == 2) {
-                    if (audioformat.getSampleSizeInBits() == 8) {
-                        soundFormat = AL10.AL_FORMAT_STEREO8;
-                    } else if (audioformat.getSampleSizeInBits() == 16) {
-                        soundFormat = AL10.AL_FORMAT_STEREO16;
-                    } else {
-                        break;
+
+                    AL10.alBufferData(intBuffer.get(0), soundFormat, byteBuffer, (int) audioformat.getSampleRate());
+                    AL10.alSourcef(index, AL10.AL_GAIN, Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
+
+                    AL10.alSourceQueueBuffers(index, intBuffer);
+                    if (AL10.alGetSourcei(index,
+                            AL10.AL_SOURCE_STATE) != AL10.AL_PLAYING) {
+                        AL10.alSourcePlay(index);
                     }
-                } else {
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                     break;
                 }
-
-                AL10.alBufferData(intBuffer.get(0), soundFormat, byteBuffer, (int) audioformat.getSampleRate());
+            }
+            if (!isClose)
+                if (decoder != null) {
+                    decoder.close();
+                    decoder = null;
+                }
+            while (AL10.alGetSourcei(index,
+                    AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING) {
                 AL10.alSourcef(index, AL10.AL_GAIN, Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
-
-                AL10.alSourceQueueBuffers(index, intBuffer);
-                if (AL10.alGetSourcei(index,
-                        AL10.AL_SOURCE_STATE) != AL10.AL_PLAYING) {
-                    AL10.alSourcePlay(index);
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                break;
+                Thread.sleep(10);
             }
-        }
-        if (!isClose)
-            if (decoder != null) {
-                decoder.close();
-                decoder = null;
-            }
-        while (AL10.alGetSourcei(index,
-                AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING) {
-            AL10.alSourcef(index, AL10.AL_GAIN, Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
-            Thread.sleep(10);
         }
         if (!isClose)
             close();
     }
 
     public void close() throws Exception {
-        isClose = true;
-        AL10.alSourceStop(index);
-        int m_numqueued = AL10.alGetSourcei(index, AL10.AL_BUFFERS_QUEUED);
-        while (m_numqueued > 0) {
-            int temp = AL10.alSourceUnqueueBuffers(index);
-            AL10.alDeleteBuffers(temp);
-            m_numqueued--;
+        synchronized (this) {
+            isClose = true;
+            AL10.alSourceStop(index);
+            int m_numqueued = AL10.alGetSourcei(index, AL10.AL_BUFFERS_QUEUED);
+            while (m_numqueued > 0) {
+                int temp = AL10.alSourceUnqueueBuffers(index);
+                AL10.alDeleteBuffers(temp);
+                m_numqueued--;
+            }
+            AL10.alDeleteSources(index);
+            if (decoder != null)
+                decoder.close();
+            AllMusic.isPlay = false;
         }
-        AL10.alDeleteSources(index);
-        if (decoder != null)
-            decoder.close();
-        AllMusic.isPlay = false;
     }
 }
