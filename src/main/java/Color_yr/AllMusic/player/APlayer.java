@@ -70,7 +70,10 @@ public class APlayer {
 
                 ByteBuffer byteBuffer = BufferUtils.createByteBuffer(
                         output.len).put(output.buff, 0, output.len);
-                ((Buffer) byteBuffer).flip();
+                if (byteBuffer instanceof ByteBuffer) {
+                    byteBuffer.flip();
+                } else
+                    ((Buffer) byteBuffer).flip();
 
                 IntBuffer intBuffer;
 
@@ -100,6 +103,7 @@ public class APlayer {
                 }
 
                 AL10.alBufferData(intBuffer.get(0), soundFormat, byteBuffer, (int) audioformat.getSampleRate());
+                AL10.alSourcef(index, AL10.AL_GAIN, Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
 
                 AL10.alSourceQueueBuffers(index, intBuffer);
                 if (AL10.alGetSourcei(index,
