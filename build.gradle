@@ -12,9 +12,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = "2.5.9"
-group = "com.Color_yr.AllMusic" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "AllMusic"
+version = "2.5.10"
+group = "com.Coloryr.AllMusic" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "[forge-1.12.2]AllMusic"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
