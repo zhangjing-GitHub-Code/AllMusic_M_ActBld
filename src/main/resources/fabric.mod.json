@@ -19,7 +19,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "Color_yr.AllMusic.AllMusic"
+      "Coloryr.AllMusic.AllMusic"
     ]
   },
   "mixins": [
