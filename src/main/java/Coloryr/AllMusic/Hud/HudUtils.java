@@ -17,28 +17,25 @@ import java.net.URL;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
-public class Hud {
-    public static String Info = "";
-    public static String List = "";
-    public static String Lyric = "";
-    public static SaveOBJ save;
-    private static ByteBuffer byteBuffer;
-    private static final int textureID;
-    public static boolean haveImg;
-    public static final Object lock = new Object();
+public class HudUtils {
+    public String Info = "";
+    public String List = "";
+    public String Lyric = "";
+    public SaveOBJ save;
+    private ByteBuffer byteBuffer;
+    private int textureID = -1;
+    public boolean haveImg;
+    public final Object lock = new Object();
 
-    private static MatrixStack stack = new MatrixStack();
+    private MatrixStack stack = new MatrixStack();
 
-    static {
-        textureID = GL11.glGenTextures();
-    }
 
-    public static void stop() {
+    public void stop() {
         haveImg = false;
         Info = List = Lyric = "";
     }
 
-    public static void SetImg(String picUrl) {
+    public void SetImg(String picUrl) {
 
         if (picUrl != null) {
             try {
@@ -70,6 +67,9 @@ public class Hud {
                 inputStream.close();
                 Thread.sleep(500);
                 Minecraft.getInstance().execute(() -> {
+                    if (textureID == -1) {
+                        textureID = GL11.glGenTextures();
+                    }
                     GlStateManager._bindTexture(textureID);
                     GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, byteBuffer);
 
@@ -84,13 +84,13 @@ public class Hud {
         }
     }
 
-    public static void Set(String data) {
+    public void Set(String data) {
         synchronized (lock) {
             save = new Gson().fromJson(data, SaveOBJ.class);
         }
     }
 
-    public static void update() {
+    public void update() {
         FontRenderer hud = Minecraft.getInstance().font;
         if (save == null)
             return;
