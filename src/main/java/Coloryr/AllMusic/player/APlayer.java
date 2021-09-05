@@ -59,7 +59,7 @@ public class APlayer {
     private void run() {
         while (true) {
             try {
-                int index = -1;
+                int index;
                 if (urls.size() > 0) {
                     AllMusic.isPlay = true;
                     url = urls.remove(urls.size() - 1);
