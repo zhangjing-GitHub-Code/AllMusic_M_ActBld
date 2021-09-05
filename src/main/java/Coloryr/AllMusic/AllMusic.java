@@ -1,6 +1,6 @@
 package Coloryr.AllMusic;
 
-import Coloryr.AllMusic.Hud.Hud;
+import Coloryr.AllMusic.Hud.HudUtils;
 import Coloryr.AllMusic.player.APlayer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -17,6 +17,7 @@ public class AllMusic implements ModInitializer {
     private static APlayer nowPlaying;
     public static boolean isPlay = false;
     private static URL nowURL;
+    public static HudUtils HudUtils;
 
     public static void onServerQuit() {
         try {
@@ -24,9 +25,9 @@ public class AllMusic implements ModInitializer {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-        Hud.Lyric = Hud.Info = Hud.List = "";
-        Hud.haveImg = false;
-        Hud.save = null;
+        HudUtils.Lyric = HudUtils.Info = HudUtils.List = "";
+        HudUtils.haveImg = false;
+        HudUtils.save = null;
     }
 
     public static URL Get(URL url) {
@@ -66,18 +67,20 @@ public class AllMusic implements ModInitializer {
                     stopPlaying();
                     nowPlaying.SetMusic(nowURL);
                 } else if (message.startsWith("[Lyric]")) {
-                    Hud.Lyric = message.substring(7);
+                    HudUtils.Lyric = message.substring(7);
                 } else if (message.startsWith("[Info]")) {
-                    Hud.Info = message.substring(6);
+                    HudUtils.Info = message.substring(6);
                 } else if (message.startsWith("[List]")) {
-                    Hud.List = message.substring(6);
+                    HudUtils.List = message.substring(6);
                 } else if (message.startsWith("[Img]")) {
-                    Hud.SetImg(message.substring(5));
+                    HudUtils.SetImg(message.substring(5));
+                } else if (message.startsWith("[Pos]")) {
+                    nowPlaying.set(message.substring(5));
                 } else if (message.equalsIgnoreCase("[clear]")) {
-                    Hud.Lyric = Hud.Info = Hud.List = "";
-                    Hud.haveImg = false;
+                    HudUtils.Lyric = HudUtils.Info = HudUtils.List = "";
+                    HudUtils.haveImg = false;
                 } else if (message.startsWith("{")) {
-                    Hud.Set(message);
+                    HudUtils.Set(message);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -87,7 +90,7 @@ public class AllMusic implements ModInitializer {
 
     private static void stopPlaying() {
         nowPlaying.close();
-        Hud.stop();
+        HudUtils.stop();
     }
 
     @Override
@@ -104,5 +107,6 @@ public class AllMusic implements ModInitializer {
             }
         });
         nowPlaying = new APlayer();
+        HudUtils = new HudUtils();
     }
 }
