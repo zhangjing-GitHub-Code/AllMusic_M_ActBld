@@ -59,6 +59,7 @@ public class APlayer {
     private void run() {
         while (true) {
             try {
+                int index = -1;
                 if (urls.size() > 0) {
                     AllMusic.isPlay = true;
                     url = urls.remove(urls.size() - 1);
@@ -75,11 +76,11 @@ public class APlayer {
                             decoder.getOutputChannels(),
                             true,
                             false);
-                    int index = AL10.alGenSources();
-                    isClose = false;
+                    index = AL10.alGenSources();
                     if (time != 0) {
                         decoder.set(time);
                     }
+                    isClose = false;
                     while (true) {
                         try {
                             if (isClose)
@@ -162,11 +163,13 @@ public class APlayer {
 
     public void SetMusic(URL url) {
         time = 0;
+        this.url = url;
         urls.add(url);
         isClose = true;
     }
 
     public void close() {
+        urls.clear();
         isClose = true;
     }
 }
