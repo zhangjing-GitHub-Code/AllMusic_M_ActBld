@@ -24,6 +24,14 @@
   <component name="ChangeListManager">
     <list default="true" id="a438f787-493d-4099-8e7b-031d844b1ab6" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/AllMusic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/AllMusic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/Hud/Hud.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/Hud/HudUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/APlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/APlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/IDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/IDecoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/flac/FlacDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/flac/FlacDecoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/mp3/Bitstream.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/mp3/Bitstream.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/mp3/Mp3Decoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/mp3/Mp3Decoder.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +102,7 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.intellij.openapi.externalSystem.service.settings.ExternalSystemGroupConfigurable" value="SELECTIVE" />
     <property name="dart.analysis.tool.window.visible" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../HeartAgeUtils" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic" />
     <property name="project.structure.last.edited" value="项目" />
     <property name="project.structure.proportion" value="0.1484375" />
     <property name="project.structure.side.proportion" value="0.26865673" />
@@ -103,6 +111,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\java-src\AllMusic_M\src\main\java\Coloryr\AllMusic" />
       <recent name="E:\java-src\AllMusic_M\src\main\java\Color_yr\AllMusic" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
