@@ -5,11 +5,13 @@ import Coloryr.AllMusic.player.decoder.BuffPack;
 import Coloryr.AllMusic.player.decoder.IDecoder;
 import Coloryr.AllMusic.player.decoder.flac.DataFormatException;
 import Coloryr.AllMusic.player.decoder.flac.FlacDecoder;
+import Coloryr.AllMusic.player.decoder.mp3.Header;
 import Coloryr.AllMusic.player.decoder.mp3.Mp3Decoder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.SoundCategory;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.params.CoreConnectionPNames;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL10;
 
@@ -25,7 +27,10 @@ public class APlayer {
 
     private HttpClient client;
     private boolean isClose;
+    private IDecoder decoder;
     private final List<URL> urls = new ArrayList<>();
+    private int time;
+    private URL url;
 
     public APlayer() {
         try {
@@ -36,14 +41,28 @@ public class APlayer {
         }
     }
 
+    public void set(String time) {
+        try {
+            int time1 = Integer.parseInt(time);
+            set(time1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void set(int time) {
+        close();
+        this.time = time;
+        urls.add(url);
+    }
+
     private void run() {
         while (true) {
             try {
                 if (urls.size() > 0) {
                     AllMusic.isPlay = true;
-                    URL url = urls.remove(urls.size() - 1);
+                    url = urls.remove(urls.size() - 1);
                     urls.clear();
-                    IDecoder decoder;
                     try {
                         decoder = new FlacDecoder();
                         decoder.set(client, url);
@@ -58,6 +77,9 @@ public class APlayer {
                             false);
                     int index = AL10.alGenSources();
                     isClose = false;
+                    if (time != 0) {
+                        decoder.set(time);
+                    }
                     while (true) {
                         try {
                             if (isClose)
@@ -139,6 +161,7 @@ public class APlayer {
     }
 
     public void SetMusic(URL url) {
+        time = 0;
         urls.add(url);
         isClose = true;
     }

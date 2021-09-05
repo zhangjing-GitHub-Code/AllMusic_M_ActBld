@@ -1,16 +1,20 @@
 package Coloryr.AllMusic;
 
-import Coloryr.AllMusic.Hud.Hud;
+import Coloryr.AllMusic.Hud.HudUtils;
 import Coloryr.AllMusic.player.APlayer;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.command.*;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -19,17 +23,62 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 @Mod(modid = AllMusic.MODID, version = AllMusic.VERSION, acceptedMinecraftVersions = "[1.12,)")
-public class AllMusic {
+public class AllMusic extends CommandBase {
     static final String MODID = "allmusic";
-    static final String VERSION = "2.5.10";
+    static final String VERSION = "2.5.11";
     public static boolean isPlay = false;
     private static URL nowURL;
     private APlayer nowPlaying;
     public static Logger logger;
+    private HudUtils HudUtils;
+
+    @Override
+    public String getName() {
+        return "allmusic";
+    }
+
+    @Override
+    public String getUsage(ICommandSender sender) {
+        return "allmusic";
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
+        if (args.length > 0) {
+            if ("play".equals(args[0])) {
+                if (args.length != 2) {
+                    sender.sendMessage(new TextComponentString("error"));
+                    return;
+                }
+                try {
+                    nowURL = new URL("https://music.163.com/song/media/outer/url?id=" + args[1]);
+                    nowURL = Get(nowURL);
+                    if (nowURL == null)
+                        return;
+                    stopPlaying();
+                    nowPlaying.SetMusic(nowURL);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+            if(args[0].equalsIgnoreCase("pos"))
+            {
+                if (args.length != 2) {
+                    sender.sendMessage(new TextComponentString("error"));
+                    return;
+                }
+                nowPlaying.set(Integer.parseInt(args[1]));
+            }
+            return;
+        }
+        sender.sendMessage(new TextComponentString("error"));
+    }
 
     public static URL Get(URL url) {
         if (url.toString().contains("https://music.163.com/song/media/outer/url?id=")
@@ -55,6 +104,16 @@ public class AllMusic {
     @Mod.EventHandler
     public void test(final FMLPostInitializationEvent event) {
         nowPlaying = new APlayer();
+        HudUtils = new HudUtils();
+    }
+
+    @Mod.EventHandler
+    public void test1(FMLServerStartingEvent event) {
+        ICommandManager commandManager = event.getServer().getCommandManager();
+        if (commandManager instanceof ServerCommandManager) {
+            ServerCommandManager server = (ServerCommandManager) commandManager;
+            server.registerCommand(this);
+        }
     }
 
     @Mod.EventHandler
@@ -85,9 +144,9 @@ public class AllMusic {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-        Hud.Lyric = Hud.Info = Hud.List = "";
-        Hud.haveImg = false;
-        Hud.save = null;
+        HudUtils.Lyric = HudUtils.Info = HudUtils.List = "";
+        HudUtils.haveImg = false;
+        HudUtils.save = null;
     }
 
     @SubscribeEvent
@@ -111,18 +170,20 @@ public class AllMusic {
                     stopPlaying();
                     nowPlaying.SetMusic(nowURL);
                 } else if (message.startsWith("[Lyric]")) {
-                    Hud.Lyric = message.substring(7);
+                    HudUtils.Lyric = message.substring(7);
                 } else if (message.startsWith("[Info]")) {
-                    Hud.Info = message.substring(6);
+                    HudUtils.Info = message.substring(6);
                 } else if (message.startsWith("[List]")) {
-                    Hud.List = message.substring(6);
+                    HudUtils.List = message.substring(6);
                 } else if (message.startsWith("[Img]")) {
-                    Hud.SetImg(message.substring(5));
+                    HudUtils.SetImg(message.substring(5));
+                } else if (message.startsWith("[Pos]")) {
+                    nowPlaying.set(message.substring(5));
                 } else if (message.equalsIgnoreCase("[clear]")) {
-                    Hud.Lyric = Hud.Info = Hud.List = "";
-                    Hud.haveImg = false;
+                    HudUtils.Lyric = HudUtils.Info = HudUtils.List = "";
+                    HudUtils.haveImg = false;
                 } else if (message.startsWith("{")) {
-                    Hud.Set(message);
+                    HudUtils.Set(message);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -134,12 +195,12 @@ public class AllMusic {
     @SideOnly(Side.CLIENT)
     public void onRenderOverlay(RenderGameOverlayEvent.Post e) {
         if (e.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) {
-            Hud.update();
+            HudUtils.update();
         }
     }
 
     private void stopPlaying() {
         nowPlaying.close();
-        Hud.stop();
+        HudUtils.stop();
     }
 }
