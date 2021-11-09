@@ -2,24 +2,25 @@ package Coloryr.AllMusic;
 
 import Coloryr.AllMusic.Hud.HudUtils;
 import Coloryr.AllMusic.player.APlayer;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.command.*;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEvent17;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 
 import java.net.HttpURLConnection;
@@ -27,7 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-@Mod(modid = AllMusic.MODID, version = AllMusic.VERSION, acceptedMinecraftVersions = "[1.12,)")
+@Mod(modid = AllMusic.MODID, version = AllMusic.VERSION)
 public class AllMusic extends CommandBase {
     static final String MODID = "allmusic";
     static final String VERSION = "2.5.11";
@@ -36,49 +37,6 @@ public class AllMusic extends CommandBase {
     private APlayer nowPlaying;
     public static Logger logger;
     private HudUtils HudUtils;
-
-    @Override
-    public String getName() {
-        return "allmusic";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender) {
-        return "allmusic";
-    }
-
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
-        if (args.length > 0) {
-            if ("play".equals(args[0])) {
-                if (args.length != 2) {
-                    sender.sendMessage(new TextComponentString("error"));
-                    return;
-                }
-                try {
-                    nowURL = new URL("https://music.163.com/song/media/outer/url?id=" + args[1]);
-                    nowURL = Get(nowURL);
-                    if (nowURL == null)
-                        return;
-                    stopPlaying();
-                    nowPlaying.SetMusic(nowURL);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                return;
-            }
-            if(args[0].equalsIgnoreCase("pos"))
-            {
-                if (args.length != 2) {
-                    sender.sendMessage(new TextComponentString("error"));
-                    return;
-                }
-                nowPlaying.set(Integer.parseInt(args[1]));
-            }
-            return;
-        }
-        sender.sendMessage(new TextComponentString("error"));
-    }
 
     public static URL Get(URL url) {
         if (url.toString().contains("https://music.163.com/song/media/outer/url?id=")
@@ -124,16 +82,16 @@ public class AllMusic extends CommandBase {
     }
 
     @SubscribeEvent
-    public void onSound(final PlaySoundEvent e) {
+    public void onSound(final PlaySoundEvent17 e) {
         if (!isPlay)
             return;
-        SoundCategory data = e.getSound().getCategory();
+        SoundCategory data = e.category;
         if (data == null)
             return;
         switch (data) {
             case MUSIC:
             case RECORDS:
-                e.setResultSound(null);
+                e.setCanceled(true);
         }
     }
 
@@ -153,7 +111,7 @@ public class AllMusic extends CommandBase {
     public void onClicentPacket(final FMLNetworkEvent.ClientCustomPacketEvent evt) {
         new Thread(() -> {
             try {
-                final ByteBuf directBuf = evt.getPacket().payload();
+                final ByteBuf directBuf = evt.packet.payload();
                 byte[] array = new byte[directBuf.readableBytes()];
                 directBuf.getBytes(directBuf.readerIndex(), array);
                 array[0] = 0;
@@ -161,8 +119,8 @@ public class AllMusic extends CommandBase {
                 if (message.equals("[Stop]")) {
                     stopPlaying();
                 } else if (message.startsWith("[Play]")) {
-                    Minecraft.getMinecraft().getSoundHandler().stop("", SoundCategory.MUSIC);
-                    Minecraft.getMinecraft().getSoundHandler().stop("", SoundCategory.RECORDS);
+                    Minecraft.getMinecraft().getSoundHandler().stopSounds();
+                    Minecraft.getMinecraft().getSoundHandler().stopSounds();
                     nowURL = new URL(message.replace("[Play]", ""));
                     nowURL = Get(nowURL);
                     if (nowURL == null)
@@ -194,7 +152,7 @@ public class AllMusic extends CommandBase {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onRenderOverlay(RenderGameOverlayEvent.Post e) {
-        if (e.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) {
+        if (e.type == RenderGameOverlayEvent.ElementType.EXPERIENCE) {
             HudUtils.update();
         }
     }
@@ -202,5 +160,48 @@ public class AllMusic extends CommandBase {
     private void stopPlaying() {
         nowPlaying.close();
         HudUtils.stop();
+    }
+
+    @Override
+    public String getCommandName() {
+        return "allmusic";
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender iCommandSender) {
+        return "allmusic";
+    }
+
+    @Override
+    public void processCommand(ICommandSender sender, String[] args) {
+        if (args.length > 0) {
+            if ("play".equals(args[0])) {
+                if (args.length != 2) {
+                    sender.addChatMessage(new ChatComponentText("error"));
+                    return;
+                }
+                try {
+                    nowURL = new URL("https://music.163.com/song/media/outer/url?id=" + args[1]);
+                    nowURL = Get(nowURL);
+                    if (nowURL == null)
+                        return;
+                    stopPlaying();
+                    nowPlaying.SetMusic(nowURL);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+            if(args[0].equalsIgnoreCase("pos"))
+            {
+                if (args.length != 2) {
+                    sender.addChatMessage(new ChatComponentText("error"));
+                    return;
+                }
+                nowPlaying.set(Integer.parseInt(args[1]));
+            }
+            return;
+        }
+        sender.addChatMessage(new ChatComponentText("error"));
     }
 }

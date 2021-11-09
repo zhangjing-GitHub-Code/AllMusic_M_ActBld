@@ -1,11 +1,11 @@
 package Coloryr.AllMusic.Hud;
 
 import com.google.gson.Gson;
+import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiIngame;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
@@ -78,7 +78,7 @@ public class HudUtils {
                     Thread.sleep(2000);
                     first = false;
                 }
-                FMLClientHandler.instance().getClient().addScheduledTask(() -> {
+                FMLClientHandler.instance().getClient().func_152344_a(() -> {
                     GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
                     GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, byteBuffer);
 
@@ -130,7 +130,7 @@ public class HudUtils {
                     }
                 }
                 if (save.isEnablePic() && haveImg) {
-                    GlStateManager.bindTexture(textureID);
+                    GL11.glBindTexture(3553,textureID);
                     GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                     GL11.glPushMatrix();
                     GL11.glTranslatef((float) save.getPic().getX(), (float) save.getPic().getY(), 0.0f);

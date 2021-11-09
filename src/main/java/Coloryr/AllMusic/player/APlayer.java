@@ -8,7 +8,7 @@ import Coloryr.AllMusic.player.decoder.flac.FlacDecoder;
 import Coloryr.AllMusic.player.decoder.mp3.Header;
 import Coloryr.AllMusic.player.decoder.mp3.Mp3Decoder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.client.audio.SoundCategory;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.params.CoreConnectionPNames;
