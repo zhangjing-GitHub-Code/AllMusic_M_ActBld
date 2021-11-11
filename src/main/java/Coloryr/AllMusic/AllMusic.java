@@ -2,6 +2,7 @@ package Coloryr.AllMusic;
 
 import Coloryr.AllMusic.Hud.HudUtils;
 import Coloryr.AllMusic.player.APlayer;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -91,7 +92,16 @@ public class AllMusic extends CommandBase {
         switch (data) {
             case MUSIC:
             case RECORDS:
-                e.setCanceled(true);
+                new Thread(()->{
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                    FMLClientHandler.instance().getClient().func_152344_a(()->{
+                        e.manager.stopSound(e.sound);
+                    });
+                }).start();
         }
     }
 
