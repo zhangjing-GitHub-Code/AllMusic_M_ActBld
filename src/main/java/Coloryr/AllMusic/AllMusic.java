@@ -4,10 +4,10 @@ import Coloryr.AllMusic.Hud.HudUtils;
 import Coloryr.AllMusic.player.APlayer;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.command.*;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,7 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-@Mod(modid = AllMusic.MODID, version = AllMusic.VERSION, acceptedMinecraftVersions = "[1.12,)")
+@Mod(modid = AllMusic.MODID, version = AllMusic.VERSION, acceptedMinecraftVersions = "[1.8,)")
 public class AllMusic extends CommandBase {
     static final String MODID = "allmusic";
     static final String VERSION = "2.5.11";
@@ -43,16 +43,16 @@ public class AllMusic extends CommandBase {
     }
 
     @Override
-    public String getUsage(ICommandSender sender) {
+    public String getCommandUsage(ICommandSender iCommandSender) {
         return "allmusic";
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
+    public void execute(ICommandSender sender, String[] args) {
         if (args.length > 0) {
             if ("play".equals(args[0])) {
                 if (args.length != 2) {
-                    sender.sendMessage(new TextComponentString("error"));
+                    sender.addChatMessage(new ChatComponentText("error"));
                     return;
                 }
                 try {
@@ -67,17 +67,16 @@ public class AllMusic extends CommandBase {
                 }
                 return;
             }
-            if(args[0].equalsIgnoreCase("pos"))
-            {
+            if (args[0].equalsIgnoreCase("pos")) {
                 if (args.length != 2) {
-                    sender.sendMessage(new TextComponentString("error"));
+                    sender.addChatMessage(new ChatComponentText("error"));
                     return;
                 }
                 nowPlaying.set(Integer.parseInt(args[1]));
             }
             return;
         }
-        sender.sendMessage(new TextComponentString("error"));
+        sender.addChatMessage(new ChatComponentText("error"));
     }
 
     public static URL Get(URL url) {
@@ -127,18 +126,18 @@ public class AllMusic extends CommandBase {
     public void onSound(final PlaySoundEvent e) {
         if (!isPlay)
             return;
-        SoundCategory data = e.getSound().getCategory();
+        SoundCategory data = e.category;
         if (data == null)
             return;
         switch (data) {
             case MUSIC:
             case RECORDS:
-                e.setResultSound(null);
+                Minecraft.getMinecraft().addScheduledTask(()-> e.manager.stopSound(e.sound));
         }
     }
 
     @SubscribeEvent
-    public void onServerQuit(final FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
+    public void onServerQuit(final FMLNetworkEvent.ServerDisconnectionFromClientEvent e) {
         try {
             stopPlaying();
         } catch (Exception e1) {
@@ -153,7 +152,7 @@ public class AllMusic extends CommandBase {
     public void onClicentPacket(final FMLNetworkEvent.ClientCustomPacketEvent evt) {
         new Thread(() -> {
             try {
-                final ByteBuf directBuf = evt.getPacket().payload();
+                final ByteBuf directBuf = evt.packet.payload();
                 byte[] array = new byte[directBuf.readableBytes()];
                 directBuf.getBytes(directBuf.readerIndex(), array);
                 array[0] = 0;
@@ -161,8 +160,7 @@ public class AllMusic extends CommandBase {
                 if (message.equals("[Stop]")) {
                     stopPlaying();
                 } else if (message.startsWith("[Play]")) {
-                    Minecraft.getMinecraft().getSoundHandler().stop("", SoundCategory.MUSIC);
-                    Minecraft.getMinecraft().getSoundHandler().stop("", SoundCategory.RECORDS);
+                    Minecraft.getMinecraft().getSoundHandler().stopSounds();
                     nowURL = new URL(message.replace("[Play]", ""));
                     nowURL = Get(nowURL);
                     if (nowURL == null)
@@ -194,7 +192,7 @@ public class AllMusic extends CommandBase {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onRenderOverlay(RenderGameOverlayEvent.Post e) {
-        if (e.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) {
+        if (e.type == RenderGameOverlayEvent.ElementType.EXPERIENCE) {
             HudUtils.update();
         }
     }
@@ -202,5 +200,10 @@ public class AllMusic extends CommandBase {
     private void stopPlaying() {
         nowPlaying.close();
         HudUtils.stop();
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return 0;
     }
 }

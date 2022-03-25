@@ -97,7 +97,7 @@ public class HudUtils {
         if (Minecraft.getMinecraft().isGamePaused())
             return;
         GuiIngame gui = Minecraft.getMinecraft().ingameGUI;
-        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        FontRenderer font = Minecraft.getMinecraft().fontRendererObj;
         if (save == null || gui == null)
             return;
         synchronized (lock) {
