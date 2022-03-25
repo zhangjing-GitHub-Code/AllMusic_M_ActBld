@@ -5,7 +5,9 @@ import Coloryr.AllMusic.player.APlayer;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundCategory;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.command.*;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -36,6 +38,7 @@ public class AllMusic extends CommandBase {
     private APlayer nowPlaying;
     public static Logger logger;
     private HudUtils HudUtils;
+    private Thread thread = new Thread(this::run);
 
     @Override
     public String getName() {
@@ -45,6 +48,31 @@ public class AllMusic extends CommandBase {
     @Override
     public String getCommandUsage(ICommandSender iCommandSender) {
         return "allmusic";
+    }
+
+    public void run() {
+        while (true) {
+            try {
+                if (isPlay) {
+                    NetHandlerPlayClient handler = Minecraft.getMinecraft().getNetHandler();
+                    if (handler == null) {
+                        stopPlaying();
+                        continue;
+                    }
+                    NetworkManager manager = handler.getNetworkManager();
+                    if (handler == null) {
+                        stopPlaying();
+                        continue;
+                    }
+                    if (!manager.hasNoChannel() && !manager.isChannelOpen()) {
+                        stopPlaying();
+                    }
+                }
+                Thread.sleep(100);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -120,6 +148,7 @@ public class AllMusic extends CommandBase {
         logger = evt.getModLog();
         MinecraftForge.EVENT_BUS.register(this);
         NetworkRegistry.INSTANCE.newEventDrivenChannel("allmusic:channel").register(this);
+        thread.start();
     }
 
     @SubscribeEvent
@@ -132,7 +161,7 @@ public class AllMusic extends CommandBase {
         switch (data) {
             case MUSIC:
             case RECORDS:
-                Minecraft.getMinecraft().addScheduledTask(()-> e.manager.stopSound(e.sound));
+                Minecraft.getMinecraft().addScheduledTask(() -> e.manager.stopSound(e.sound));
         }
     }
 
@@ -200,6 +229,7 @@ public class AllMusic extends CommandBase {
     private void stopPlaying() {
         nowPlaying.close();
         HudUtils.stop();
+        isPlay = false;
     }
 
     @Override

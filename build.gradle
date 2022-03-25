@@ -15,7 +15,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-version = "2.5.11"
+version = "2.5.12"
 group = "com.Coloryr.AllMusic" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "[forge-1.8]AllMusic"
 
