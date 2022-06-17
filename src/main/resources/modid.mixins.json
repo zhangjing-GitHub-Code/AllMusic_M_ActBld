@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "Coloryr.AllMusic.mixin",
+  "package": "coloryr.allmusic.mixin",
   "compatibilityLevel": "JAVA_16",
   "client": [
     "GuiShow",

@@ -1,17 +1,15 @@
-package Coloryr.AllMusic.player;
+package coloryr.allmusic.player;
 
-import Coloryr.AllMusic.AllMusic;
-import Coloryr.AllMusic.player.decoder.BuffPack;
-import Coloryr.AllMusic.player.decoder.IDecoder;
-import Coloryr.AllMusic.player.decoder.flac.DataFormatException;
-import Coloryr.AllMusic.player.decoder.flac.FlacDecoder;
-import Coloryr.AllMusic.player.decoder.mp3.Header;
-import Coloryr.AllMusic.player.decoder.mp3.Mp3Decoder;
+import coloryr.allmusic.AllMusic;
+import coloryr.allmusic.player.decoder.BuffPack;
+import coloryr.allmusic.player.decoder.IDecoder;
+import coloryr.allmusic.player.decoder.flac.DataFormatException;
+import coloryr.allmusic.player.decoder.flac.FlacDecoder;
+import coloryr.allmusic.player.decoder.mp3.Mp3Decoder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.sound.SoundCategory;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.params.CoreConnectionPNames;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL10;
 
@@ -22,6 +20,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 public class APlayer {
 
@@ -31,6 +30,9 @@ public class APlayer {
     private final List<URL> urls = new ArrayList<>();
     private int time;
     private URL url;
+
+    private final Semaphore semaphore = new Semaphore(0);
+    private int index = -1;
 
     public APlayer() {
         try {
@@ -54,14 +56,16 @@ public class APlayer {
         close();
         this.time = time;
         urls.add(url);
+        semaphore.release();
     }
 
     private void run() {
         while (true) {
             try {
-                int index;
+                semaphore.acquire();
                 if (urls.size() > 0) {
                     AllMusic.isPlay = true;
+                    index = AL10.alGenSources();
                     url = urls.remove(urls.size() - 1);
                     urls.clear();
                     try {
@@ -76,7 +80,6 @@ public class APlayer {
                             decoder.getOutputChannels(),
                             true,
                             false);
-                    index = AL10.alGenSources();
                     if (time != 0) {
                         decoder.set(time);
                     }
@@ -137,7 +140,6 @@ public class APlayer {
                         while (!isClose && AL10.alGetSourcei(index,
                                 AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING) {
                             AL10.alSourcef(index, AL10.AL_GAIN, MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.RECORDS));
-
                             Thread.sleep(10);
                         }
                         AL10.alSourceStop(index);
@@ -162,11 +164,12 @@ public class APlayer {
         }
     }
 
-    public void SetMusic(URL url) {
+    public void setMusic(URL url) {
         time = 0;
         this.url = url;
         urls.add(url);
         isClose = true;
+        semaphore.release();
     }
 
     public void close() {

@@ -19,11 +19,10 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package Coloryr.AllMusic.player.decoder.flac;
+package coloryr.allmusic.player.decoder.flac;
 
-import Coloryr.AllMusic.player.decoder.BuffPack;
-import Coloryr.AllMusic.player.decoder.IDecoder;
-import Coloryr.AllMusic.player.decoder.mp3.Header;
+import coloryr.allmusic.player.decoder.BuffPack;
+import coloryr.allmusic.player.decoder.IDecoder;
 import org.apache.http.client.HttpClient;
 
 import java.io.IOException;

@@ -4,13 +4,13 @@
   "version": "${version}",
 
   "name": "AllMusic",
-  "description": "A heartAge mod",
+  "description": "A coloryr mod",
   "authors": [
     "Color_yr"
   ],
   "contact": {
-    "homepage": "https://github.com/HeartAge/AllMusic_M/tree/fabric",
-    "sources": "https://github.com/HeartAge/AllMusic_M/tree/fabric"
+    "homepage": "https://github.com/coloryr/AllMusic_M/tree/fabric",
+    "sources": "https://github.com/coloryr/AllMusic_M/tree/fabric"
   },
 
   "license": "CC0-1.0",
@@ -19,7 +19,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "Coloryr.AllMusic.AllMusic"
+      "coloryr.allmusic.AllMusic"
     ]
   },
   "mixins": [

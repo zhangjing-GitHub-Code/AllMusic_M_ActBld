@@ -19,7 +19,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package Coloryr.AllMusic.player.decoder.flac;
+package coloryr.allmusic.player.decoder.flac;
 
 import org.apache.http.ConnectionClosedException;
 import org.apache.http.HttpEntity;

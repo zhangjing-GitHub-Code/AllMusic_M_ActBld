@@ -18,10 +18,10 @@
  *----------------------------------------------------------------------
  */
 
-package Coloryr.AllMusic.player.decoder.mp3;
+package coloryr.allmusic.player.decoder.mp3;
 
-import Coloryr.AllMusic.player.decoder.BuffPack;
-import Coloryr.AllMusic.player.decoder.IDecoder;
+import coloryr.allmusic.player.decoder.BuffPack;
+import coloryr.allmusic.player.decoder.IDecoder;
 import org.apache.http.client.HttpClient;
 
 import java.net.URL;

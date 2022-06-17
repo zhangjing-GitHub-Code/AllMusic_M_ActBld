@@ -1,7 +1,7 @@
-package Coloryr.AllMusic;
+package coloryr.allmusic;
 
-import Coloryr.AllMusic.Hud.HudUtils;
-import Coloryr.AllMusic.player.APlayer;
+import coloryr.allmusic.hud.HudUtils;
+import coloryr.allmusic.player.APlayer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
@@ -67,7 +67,7 @@ public class AllMusic implements ModInitializer {
                     if (nowURL == null)
                         return;
                     stopPlaying();
-                    nowPlaying.SetMusic(nowURL);
+                    nowPlaying.setMusic(nowURL);
                 } else if (message.startsWith("[Lyric]")) {
                     HudUtils.Lyric = message.substring(7);
                 } else if (message.startsWith("[Info]")) {
@@ -75,13 +75,13 @@ public class AllMusic implements ModInitializer {
                 } else if (message.startsWith("[List]")) {
                     HudUtils.List = message.substring(6);
                 } else if (message.startsWith("[Img]")) {
-                    HudUtils.SetImg(message.substring(5));
+                    HudUtils.setImg(message.substring(5));
                 } else if (message.startsWith("[Pos]")) {
                     nowPlaying.set(message.substring(5));
                 } else if (message.equalsIgnoreCase("[clear]")) {
-                    HudUtils.clear();
+                    HudUtils.stop();
                 } else if (message.startsWith("{")) {
-                    HudUtils.Set(message);
+                    HudUtils.setPos(message);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -92,7 +92,7 @@ public class AllMusic implements ModInitializer {
     private static void stopPlaying() {
         try {
             nowPlaying.close();
-            HudUtils.clear();
+            HudUtils.stop();
         } catch (Exception e) {
             e.printStackTrace();
         }

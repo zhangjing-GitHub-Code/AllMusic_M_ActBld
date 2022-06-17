@@ -1,6 +1,6 @@
-package Coloryr.AllMusic.mixin;
+package coloryr.allmusic.mixin;
 
-import Coloryr.AllMusic.AllMusic;
+import coloryr.allmusic.AllMusic;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundSystem;
 import net.minecraft.sound.SoundCategory;
@@ -16,9 +16,7 @@ public class SoundEvent {
         if (AllMusic.isPlay) {
             SoundCategory data = soundInstance.getCategory();
             switch (data) {
-                case RECORDS:
-                case MUSIC:
-                    info.cancel();
+                case RECORDS, MUSIC -> info.cancel();
             }
         }
     }

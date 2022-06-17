@@ -1,6 +1,5 @@
-package Coloryr.AllMusic.player.decoder;
+package coloryr.allmusic.player.decoder;
 
-import Coloryr.AllMusic.player.decoder.mp3.Header;
 import org.apache.http.client.HttpClient;
 
 import java.net.URL;

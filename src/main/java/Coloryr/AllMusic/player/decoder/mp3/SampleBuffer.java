@@ -23,7 +23,7 @@
  *----------------------------------------------------------------------
  */
 
-package Coloryr.AllMusic.player.decoder.mp3;
+package coloryr.allmusic.player.decoder.mp3;
 
 /**
  * The <code>SampleBuffer</code> class implements an output buffer
