@@ -84,6 +84,28 @@ public class APlayer {
                         decoder.set(time);
                     }
                     isClose = false;
+
+                    int soundFormat;
+                    if (audioformat.getChannels() == 1) {
+                        if (audioformat.getSampleSizeInBits() == 8) {
+                            soundFormat = AL10.AL_FORMAT_MONO8;
+                        } else if (audioformat.getSampleSizeInBits() == 16) {
+                            soundFormat = AL10.AL_FORMAT_MONO16;
+                        } else {
+                            break;
+                        }
+                    } else if (audioformat.getChannels() == 2) {
+                        if (audioformat.getSampleSizeInBits() == 8) {
+                            soundFormat = AL10.AL_FORMAT_STEREO8;
+                        } else if (audioformat.getSampleSizeInBits() == 16) {
+                            soundFormat = AL10.AL_FORMAT_STEREO16;
+                        } else {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+
                     while (true) {
                         try {
                             if (isClose)
@@ -101,27 +123,6 @@ public class APlayer {
 
                             intBuffer = BufferUtils.createIntBuffer(1);
                             AL10.alGenBuffers(intBuffer);
-
-                            int soundFormat;
-                            if (audioformat.getChannels() == 1) {
-                                if (audioformat.getSampleSizeInBits() == 8) {
-                                    soundFormat = AL10.AL_FORMAT_MONO8;
-                                } else if (audioformat.getSampleSizeInBits() == 16) {
-                                    soundFormat = AL10.AL_FORMAT_MONO16;
-                                } else {
-                                    break;
-                                }
-                            } else if (audioformat.getChannels() == 2) {
-                                if (audioformat.getSampleSizeInBits() == 8) {
-                                    soundFormat = AL10.AL_FORMAT_STEREO8;
-                                } else if (audioformat.getSampleSizeInBits() == 16) {
-                                    soundFormat = AL10.AL_FORMAT_STEREO16;
-                                } else {
-                                    break;
-                                }
-                            } else {
-                                break;
-                            }
 
                             AL10.alBufferData(intBuffer.get(0), soundFormat, byteBuffer, (int) audioformat.getSampleRate());
                             AL10.alSourcef(index, AL10.AL_GAIN, MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.RECORDS));
@@ -166,14 +167,21 @@ public class APlayer {
 
     public void setMusic(URL url) {
         time = 0;
+        close();
         this.url = url;
         urls.add(url);
-        isClose = true;
         semaphore.release();
     }
 
     public void close() {
         urls.clear();
         isClose = true;
+        if (decoder != null) {
+            try {
+                decoder.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

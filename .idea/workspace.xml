@@ -6,20 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="6a802f46-9f68-41e3-b6f5-fcc4d6a66ded" name="默认变更列表" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/AllMusic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/AllMusic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/Hud/HudUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/Hud/HudUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/Hud/PosOBJ.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/Hud/PosOBJ.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/Hud/SaveOBJ.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/Hud/SaveOBJ.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/APlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/APlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/flac/FlacDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/flac/FlacDecoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/mp3/Mp3Decoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/mp3/Mp3Decoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fabric.mod.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fabric.mod.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/modid.mixins.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/modid.mixins.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +59,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="tun3ar55" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -153,6 +144,19 @@
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="allmusic.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="allmusic.main" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
     <configuration name="未命名" type="Remote" nameIsGenerated="true">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
