@@ -5,9 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6a802f46-9f68-41e3-b6f5-fcc4d6a66ded" name="默认变更列表" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/Hud/HudUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/Hud/HudUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/Hud/SaveOBJ.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/Hud/SaveOBJ.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/APlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/APlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/IDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/IDecoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/flac/FlacDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/flac/FlacDecoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/flac/SeekableFileFlacInput.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/flac/SeekableFileFlacInput.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/mp3/Bitstream.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/mp3/Bitstream.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/mp3/Mp3Decoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Coloryr/AllMusic/player/decoder/mp3/Mp3Decoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/modid.mixins.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/modid.mixins.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,22 +83,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/code/Live2D_For_Android&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;项目&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "E:/code/AllMusic_M",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "项目",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\java-src\AllMusic_M\src\main\java\Coloryr\AllMusic" />
@@ -108,7 +116,7 @@
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
+        <option name="scriptParameters" value="" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -197,6 +205,7 @@
       <workItem from="1650094999662" duration="63000" />
       <workItem from="1655475888729" duration="152000" />
       <workItem from="1655476101201" duration="923000" />
+      <workItem from="1663510547948" duration="1595000" />
     </task>
     <servers />
   </component>
@@ -213,6 +222,22 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/coloryr/allmusic/player/APlayer.java</url>
+          <line>231</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/coloryr/allmusic/player/APlayer.java</url>
+          <line>201</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/AllMusic_M$AllMusic_M__runClient_.ic" NAME="AllMusic_M [runClient] 覆盖结果" MODIFIED="1624508671127" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

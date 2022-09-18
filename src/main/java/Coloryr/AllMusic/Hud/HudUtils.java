@@ -1,19 +1,18 @@
 package coloryr.allmusic.hud;
 
+import coloryr.allmusic.AllMusic;
 import com.google.gson.Gson;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -30,31 +29,49 @@ public class HudUtils {
     public final Object lock = new Object();
     private final Queue<String> urlList = new ConcurrentLinkedDeque<>();
     private final Semaphore semaphore = new Semaphore(0);
+    private final HttpClient client;
+    private HttpGet get;
+    private InputStream inputStream;
 
     public HudUtils() {
         Thread thread = new Thread(this::run);
         thread.setName("allmusic_pic");
         thread.start();
+        client = HttpClientBuilder.create().useSystemProperties().build();
     }
 
-    public void stop() {
+    public void close() {
         haveImg = false;
         Info = List = Lyric = "";
+        getClose();
+    }
+
+    private void getClose() {
+        if (get != null && !get.isAborted()) {
+            get.abort();
+            get = null;
+        }
+        try {
+            if (inputStream != null) {
+                inputStream.close();
+                inputStream = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadPic(String picUrl) {
         try {
-            URL url = new URL(picUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setConnectTimeout(4 * 1000);
-            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36 Edg/84.0.522.52");
-            connection.setRequestProperty("Host", "music.163.com");
-            connection.connect();
-            InputStream inputStream = connection.getInputStream();
+            getClose();
+            get = new HttpGet(picUrl);
+            HttpResponse response = client.execute(get);
+            HttpEntity entity = response.getEntity();
+            inputStream = entity.getContent();
             BufferedImage image = ImageIO.read(inputStream);
             int[] pixels = new int[image.getWidth() * image.getHeight()];
             image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
+            getClose();
             byteBuffer = ByteBuffer.allocateDirect(image.getWidth() * image.getHeight() * 4);
 
             for (int h = 0; h < image.getHeight(); h++) {
@@ -69,8 +86,8 @@ public class HudUtils {
             }
 
             byteBuffer.flip();
-            inputStream.close();
-            MinecraftClient.getInstance().execute(() -> {
+
+            AllMusic.runMain(() -> {
                 if (textureID == -1) {
                     textureID = GL11.glGenTextures();
                 }
@@ -83,6 +100,7 @@ public class HudUtils {
             });
         } catch (Exception e) {
             e.printStackTrace();
+            AllMusic.sendMessage("[AllMusic客户端]图片解析错误");
             haveImg = false;
         }
     }
@@ -114,8 +132,7 @@ public class HudUtils {
         }
     }
 
-    public void update(MatrixStack stack) {
-        var hud = MinecraftClient.getInstance().textRenderer;
+    public void update() {
         if (save == null)
             return;
         synchronized (lock) {
@@ -123,8 +140,7 @@ public class HudUtils {
                 int offset = 0;
                 String[] temp = Info.split("\n");
                 for (String item : temp) {
-                    hud.draw(stack, item, (float) save.getInfo().getX(),
-                            (float) save.getInfo().getY() + offset, 0xffffff);
+                    AllMusic.drawText(item, (float) save.getInfo().getX(), (float) save.getInfo().getY() + offset);
                     offset += 10;
                 }
             }
@@ -132,8 +148,7 @@ public class HudUtils {
                 String[] temp = List.split("\n");
                 int offset = 0;
                 for (String item : temp) {
-                    hud.draw(stack, item, (float) save.getList().getX(),
-                            (float) save.getList().getY() + offset, 0xffffff);
+                    AllMusic.drawText(item, (float) save.getList().getX(), (float) save.getList().getY() + offset);
                     offset += 10;
                 }
             }
@@ -141,18 +156,12 @@ public class HudUtils {
                 String[] temp = Lyric.split("\n");
                 int offset = 0;
                 for (String item : temp) {
-                    hud.draw(stack, item, (float) save.getLyric().getX(),
-                            (float) save.getLyric().getY() + offset, 0xffffff);
+                    AllMusic.drawText(item, (float) save.getLyric().getX(), (float) save.getLyric().getY() + offset);
                     offset += 10;
                 }
             }
             if (save.isEnablePic() && haveImg) {
-                RenderSystem.setShader(GameRenderer::getPositionTexShader);
-                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                RenderSystem.setShaderTexture(0, textureID);
-                int size = save.getPicSize();
-                DrawableHelper.drawTexture(stack, save.getPic().getX(), save.getPic().getY(),
-                        0, 0, 0, size, size, size, size);
+                AllMusic.drawPic(textureID, save.getPicSize(), save.getPic().getX(), save.getPic().getY());
             }
         }
     }

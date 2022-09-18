@@ -21,18 +21,11 @@
 
 package coloryr.allmusic.player.decoder.flac;
 
-import org.apache.http.ConnectionClosedException;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
+import coloryr.allmusic.player.APlayer;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.net.SocketException;
-import java.net.URL;
 
 
 /**
@@ -44,23 +37,12 @@ public final class SeekableFileFlacInput extends AbstractFlacLowLevelInput {
 
     // The underlying byte-based input stream to read from.
     private BufferedInputStream raf;
-    private final HttpGet get;
-    private final HttpClient client;
-    private InputStream content;
-    private long local;
-
 
     /*---- Constructors ----*/
 
-    public SeekableFileFlacInput(HttpClient client, URL url) throws Exception {
+    public SeekableFileFlacInput(APlayer player) {
         super();
-        this.client = client;
-        this.get = new HttpGet(url.toString());
-        this.get.setHeader("Range", "bytes=" + local + "-");
-        HttpResponse response = this.client.execute(get);
-        HttpEntity entity = response.getEntity();
-        content = entity.getContent();
-        this.raf = new BufferedInputStream(content);
+        this.raf = new BufferedInputStream(player);
     }
 
     /*---- Methods ----*/
@@ -74,23 +56,11 @@ public final class SeekableFileFlacInput extends AbstractFlacLowLevelInput {
     }
 
     protected int readUnderlying(byte[] buf, int off, int len) throws IOException {
-        try {
-            int temp = raf.read(buf, off, len);
-            local += temp;
-            return temp;
-        } catch (ConnectionClosedException | SocketException ex) {
-            this.get.setHeader("Range", "bytes=" + local + "-");
-            HttpResponse response = this.client.execute(get);
-            HttpEntity entity = response.getEntity();
-            content = entity.getContent();
-            this.raf = new BufferedInputStream(content);
-            return readUnderlying(buf, off, len);
-        }
+        return raf.read(buf, off, len);
     }
 
     // Closes the underlying RandomAccessFile stream (very important).
     public void close() throws IOException {
-        get.abort();
         if (raf != null) {
             raf.close();
             raf = null;

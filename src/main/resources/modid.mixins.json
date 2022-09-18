@@ -6,7 +6,8 @@
   "client": [
     "GuiShow",
     "QuitServer",
-    "SoundEvent"
+    "SoundEvent",
+    "Tick"
   ],
   "injectors": {
     "defaultRequire": 1
