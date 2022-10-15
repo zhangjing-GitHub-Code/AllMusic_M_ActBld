@@ -24,7 +24,7 @@
  *----------------------------------------------------------------------
  */
 
-package Coloryr.AllMusic.player.decoder.mp3;
+package coloryr.allmusic.player.decoder.mp3;
 
 /**
  * Implements decoding of MPEG Audio Layer I frames.
