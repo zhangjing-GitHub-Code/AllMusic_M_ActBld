@@ -19,7 +19,7 @@
  */
 
 
-package Coloryr.AllMusic.player.decoder.mp3;
+package coloryr.allmusic.player.decoder.mp3;
 
 /**
  * The <code>Equalizer</code> class can be used to specify
