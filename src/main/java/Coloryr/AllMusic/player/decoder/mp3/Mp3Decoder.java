@@ -18,13 +18,12 @@
  *----------------------------------------------------------------------
  */
 
-package Coloryr.AllMusic.player.decoder.mp3;
+package coloryr.allmusic.player.decoder.mp3;
 
-import Coloryr.AllMusic.player.decoder.BuffPack;
-import Coloryr.AllMusic.player.decoder.IDecoder;
-import org.apache.http.client.HttpClient;
-
-import java.net.URL;
+import coloryr.allmusic.player.APlayer;
+import coloryr.allmusic.player.decoder.BuffPack;
+import coloryr.allmusic.player.decoder.IDecoder;
+import coloryr.allmusic.player.decoder.flac.DataFormatException;
 
 /**
  * The <code>Decoder</code> class encapsulates the details of
@@ -60,13 +59,15 @@ public class Mp3Decoder implements DecoderErrors, IDecoder {
     private int outputChannels;
     private boolean initialized;
     private Bitstream bitstream;
+    private final APlayer player;
 
     /**
      * Creates a new <code>Decoder</code> instance with default
      * parameters.
      */
 
-    public Mp3Decoder() {
+    public Mp3Decoder(APlayer player) {
+        this.player = player;
         Equalizer eq = DEFAULT_PARAMS.getInitialEqualizerSettings();
         if (eq != null) {
             /*
@@ -109,7 +110,7 @@ public class Mp3Decoder implements DecoderErrors, IDecoder {
     public BuffPack decodeFrame()
             throws Exception {
         Header header = bitstream.readFrame();
-        if(header == null)
+        if (header == null)
             return null;
         int layer = header.layer();
         output.clear_buffer();
@@ -127,12 +128,17 @@ public class Mp3Decoder implements DecoderErrors, IDecoder {
     }
 
     @Override
-    public void set(HttpClient client, URL url) throws Exception {
-        bitstream = new Bitstream(client, url);
+    public boolean set() throws Exception {
+        bitstream = new Bitstream(player);
         Header header = bitstream.readFrame();
+        if (header == null) {
+            return false;
+        }
         if (!initialized) {
             initialize(header);
         }
+
+        return true;
     }
 
     /**
@@ -159,8 +165,8 @@ public class Mp3Decoder implements DecoderErrors, IDecoder {
     @Override
     public void set(int time) {
         try {
-            long data = (long) (time / 26) * bitstream.getframesize();
-            bitstream.setLocal(data);
+            long data = ((time / 26) * (long) bitstream.getframesize()) + bitstream.local;
+            player.setLocal(data);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -220,7 +226,6 @@ public class Mp3Decoder implements DecoderErrors, IDecoder {
 
         int mode = header.mode();
         int channels = mode == Header.SINGLE_CHANNEL ? 1 : 2;
-
 
         // set up output buffer if not set up by client.
         if (output == null)
