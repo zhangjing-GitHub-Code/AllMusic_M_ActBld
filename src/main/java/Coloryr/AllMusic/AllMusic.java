@@ -78,7 +78,7 @@ public class AllMusic {
         switch (data) {
             case MUSIC:
             case RECORDS:
-                e.getSource().func_216418_f();
+                e.getSource().stop();
         }
     }
 
