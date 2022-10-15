@@ -1,4 +1,4 @@
-package Coloryr.AllMusic.Hud;
+package coloryr.allmusic.hud;
 
 public class SaveOBJ {
     private PosOBJ List;
@@ -9,6 +9,7 @@ public class SaveOBJ {
     private boolean EnableLyric;
     private boolean EnableInfo;
     private boolean EnablePic;
+    private int PicSize;
 
     public SaveOBJ() {
         EnableList = true;
@@ -19,6 +20,15 @@ public class SaveOBJ {
         Lyric = new PosOBJ(2, 55);
         Info = new PosOBJ(2, 2);
         Pic = new PosOBJ(2, 2);
+        PicSize = 70;
+    }
+
+    public void setPicSize(int picSize) {
+        PicSize = picSize;
+    }
+
+    public int getPicSize() {
+        return PicSize;
     }
 
     public boolean isEnablePic() {
