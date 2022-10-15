@@ -19,11 +19,11 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "Coloryr.AllMusic.AllMusic"
+      "coloryr.allmusic.AllMusic"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "allmusic.mixins.json"
   ],
 
   "depends": {

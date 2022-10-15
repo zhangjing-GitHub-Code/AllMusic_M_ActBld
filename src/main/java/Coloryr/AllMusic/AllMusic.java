@@ -1,101 +1,109 @@
-package Coloryr.AllMusic;
+package coloryr.allmusic;
 
-import Coloryr.AllMusic.Hud.HudUtils;
-import Coloryr.AllMusic.player.APlayer;
+import coloryr.allmusic.hud.HudUtils;
+import coloryr.allmusic.player.APlayer;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
+import org.lwjgl.opengl.GL11;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class AllMusic implements ModInitializer {
     public static final Identifier ID = new Identifier("allmusic", "channel");
-    private static APlayer nowPlaying;
-    public static boolean isPlay = false;
-    private static URL nowURL;
-    public static HudUtils HudUtils;
+    public static APlayer nowPlaying;
+    public static String url;
+    public static HudUtils hudUtils;
 
     public static void onServerQuit() {
         try {
-            nowPlaying.close();
-            HudUtils.stop();
+            stopPlaying();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        HudUtils.Lyric = HudUtils.Info = HudUtils.List = "";
-        HudUtils.haveImg = false;
-        HudUtils.save = null;
-    }
-
-    public static URL Get(URL url) {
-        if (url.toString().contains("https://music.163.com/song/media/outer/url?id=")
-                || url.toString().contains("http://music.163.com/song/media/outer/url?id=")) {
-            try {
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setConnectTimeout(4 * 1000);
-                connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
-                        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36 Edg/84.0.522.52");
-                connection.setRequestProperty("Host", "music.163.com");
-                connection.connect();
-                if (connection.getResponseCode() == 302) {
-                    return new URL(connection.getHeaderField("Location"));
-                }
-                return connection.getURL();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return url;
+        hudUtils.Lyric = hudUtils.Info = hudUtils.List = "";
+        hudUtils.haveImg = false;
+        hudUtils.save = null;
     }
 
     public static void onClicentPacket(final String message) {
-        new Thread(() -> {
-            try {
-                if (message.equals("[Stop]")) {
-                    stopPlaying();
-                } else if (message.startsWith("[Play]")) {
-                    MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.MUSIC);
-                    MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.RECORDS);
-                    stopPlaying();
-                    nowURL = new URL(message.replace("[Play]", ""));
-                    nowURL = Get(nowURL);
-                    if (nowURL == null)
-                        return;
-                    stopPlaying();
-                    nowPlaying.SetMusic(nowURL);
-                } else if (message.startsWith("[Lyric]")) {
-                    HudUtils.Lyric = message.substring(7);
-                } else if (message.startsWith("[Info]")) {
-                    HudUtils.Info = message.substring(6);
-                } else if (message.startsWith("[List]")) {
-                    HudUtils.List = message.substring(6);
-                } else if (message.startsWith("[Img]")) {
-                    HudUtils.SetImg(message.substring(5));
-                } else if (message.startsWith("[Pos]")) {
-                    nowPlaying.set(message.substring(5));
-                } else if (message.equalsIgnoreCase("[clear]")) {
-                    HudUtils.clear();
-                } else if (message.startsWith("{")) {
-                    HudUtils.Set(message);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, "allmusic").start();
-    }
-
-    private static void stopPlaying() {
         try {
-            nowPlaying.close();
-            HudUtils.clear();
+            if (message.equals("[Stop]")) {
+                stopPlaying();
+            } else if (message.startsWith("[Play]")) {
+                MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.MUSIC);
+                MinecraftClient.getInstance().getSoundManager().stopSounds(null, SoundCategory.RECORDS);
+                stopPlaying();
+                url = message.replace("[Play]", "");
+                nowPlaying.setMusic(url);
+            } else if (message.startsWith("[Lyric]")) {
+                hudUtils.Lyric = message.substring(7);
+            } else if (message.startsWith("[Info]")) {
+                hudUtils.Info = message.substring(6);
+            } else if (message.startsWith("[List]")) {
+                hudUtils.List = message.substring(6);
+            } else if (message.startsWith("[Img]")) {
+                hudUtils.setImg(message.substring(5));
+            } else if (message.startsWith("[Pos]")) {
+                nowPlaying.set(message.substring(5));
+            } else if (message.equalsIgnoreCase("[clear]")) {
+                hudUtils.close();
+            } else if (message.startsWith("{")) {
+                hudUtils.setPos(message);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void stopPlaying() {
+        nowPlaying.closePlayer();
+        hudUtils.close();
+    }
+
+    private static MatrixStack stack = new MatrixStack();
+
+    public static void drawText(String item, float x, float y){
+        var hud = MinecraftClient.getInstance().inGameHud;
+        var textRenderer = hud.getTextRenderer();
+        textRenderer.drawWithShadow(stack, item, x, y, 0xffffff);
+    }
+
+    public static void drawPic(int textureID, int size, int x, int y) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, textureID);
+        DrawableHelper.drawTexture(stack, x, y,
+                0, 0, 0, size, size, size, size);
+    }
+
+    public static void sendMessage(String data){
+        MinecraftClient.getInstance().execute(() -> {
+            if (MinecraftClient.getInstance().player == null)
+                return;
+            MinecraftClient.getInstance().player.sendChatMessage(data);
+        });
+    }
+
+    public static void runMain(Runnable runnable){
+        MinecraftClient.getInstance().execute(runnable);
+    }
+
+    public static float getVolume(){
+        return MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.RECORDS);
+    }
+
+    public static void reload(){
+
     }
 
     @Override
@@ -112,6 +120,6 @@ public class AllMusic implements ModInitializer {
             }
         });
         nowPlaying = new APlayer();
-        HudUtils = new HudUtils();
+        hudUtils = new HudUtils();
     }
 }
