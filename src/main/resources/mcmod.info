@@ -2,7 +2,7 @@
   {
     "modid": "allmusic",
     "name": "AllMusic",
-    "description": "HeartAge_server_mod",
+    "description": "allmusic mod",
     "version": "${version}",
     "mcversion": "${mcversion}",
     "url": "",
@@ -10,7 +10,7 @@
     "authorList": [
       "Color_yr"
     ],
-    "credits": "This mod is use in HeartAge Minecraft Server.",
+    "credits": "This mod is use in AllMusic.",
     "logoFile": "",
     "screenshots": [],
     "dependencies": []
