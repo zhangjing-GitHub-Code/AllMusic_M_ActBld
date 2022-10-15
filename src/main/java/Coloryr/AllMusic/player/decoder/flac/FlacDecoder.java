@@ -19,15 +19,14 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package Coloryr.AllMusic.player.decoder.flac;
+package coloryr.allmusic.player.decoder.flac;
 
-import Coloryr.AllMusic.player.decoder.BuffPack;
-import Coloryr.AllMusic.player.decoder.IDecoder;
-import Coloryr.AllMusic.player.decoder.mp3.Header;
-import org.apache.http.client.HttpClient;
+import coloryr.allmusic.AllMusic;
+import coloryr.allmusic.player.APlayer;
+import coloryr.allmusic.player.decoder.BuffPack;
+import coloryr.allmusic.player.decoder.IDecoder;
 
 import java.io.IOException;
-import java.net.URL;
 
 
 /**
@@ -60,6 +59,7 @@ import java.net.URL;
  */
 public final class FlacDecoder implements AutoCloseable, IDecoder {
 
+    private final APlayer player;
     /*---- Fields ----*/
 
     public StreamInfo streamInfo;
@@ -75,9 +75,9 @@ public final class FlacDecoder implements AutoCloseable, IDecoder {
 
     // Constructs a new FLAC decoder to read the given file.
     // This immediately reads the basic header but not metadata blocks.
-    public FlacDecoder() {
+    public FlacDecoder(APlayer player) {
         // Initialize streams
-
+        this.player = player;
     }
 
     /*---- Methods ----*/
@@ -151,8 +151,7 @@ public final class FlacDecoder implements AutoCloseable, IDecoder {
                 if (streamInfo.sampleDepth == 24) {
                     float temp = val / 16777216f;
                     val = (int) (temp * 0x7FFF);
-                }
-                else if (streamInfo.sampleDepth == 32) {
+                } else if (streamInfo.sampleDepth == 32) {
                     float temp = val / 1099511627776f;
                     val = (int) (temp * 0x7FFF);
                 }
@@ -178,14 +177,13 @@ public final class FlacDecoder implements AutoCloseable, IDecoder {
     }
 
     @Override
-    public void set(HttpClient client, URL url) throws Exception {
-        input = new SeekableFileFlacInput(client, url);
+    public boolean set() throws Exception {
+        input = new SeekableFileFlacInput(player);
 
         // Read basic header
         if (input.readUint(32) != 0x664C6143)  // Magic string "fLaC"
         {
-            input.close();
-            throw new DataFormatException("Invalid magic string");
+            return false;
         }
         metadataEndPos = -1;
 
@@ -195,6 +193,8 @@ public final class FlacDecoder implements AutoCloseable, IDecoder {
         int bytesPerSample = streamInfo.sampleDepth / 8;
         samples = new int[streamInfo.numChannels][65536];
         sampleBytes = new byte[65536 * streamInfo.numChannels * bytesPerSample];
+
+        return true;
     }
 
     @Override
@@ -209,6 +209,6 @@ public final class FlacDecoder implements AutoCloseable, IDecoder {
 
     @Override
     public void set(int time) {
-
+        AllMusic.sendMessage("[AllMusic客户端]不支持中间播放");
     }
 }

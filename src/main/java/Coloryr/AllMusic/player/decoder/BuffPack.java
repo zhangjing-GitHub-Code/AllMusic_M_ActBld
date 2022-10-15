@@ -1,4 +1,4 @@
-package Coloryr.AllMusic.player.decoder;
+package coloryr.allmusic.player.decoder;
 
 public class BuffPack {
     public byte[] buff;

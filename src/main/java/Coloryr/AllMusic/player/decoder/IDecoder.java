@@ -1,16 +1,11 @@
-package Coloryr.AllMusic.player.decoder;
-
-import Coloryr.AllMusic.player.decoder.mp3.Header;
-import org.apache.http.client.HttpClient;
-
-import java.net.URL;
+package coloryr.allmusic.player.decoder;
 
 public interface IDecoder {
     BuffPack decodeFrame() throws Exception;
 
     void close() throws Exception;
 
-    void set(HttpClient client, URL url) throws Exception;
+    boolean set() throws Exception;
 
     int getOutputFrequency();
 
