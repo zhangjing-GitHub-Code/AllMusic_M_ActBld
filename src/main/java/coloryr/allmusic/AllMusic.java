@@ -122,8 +122,7 @@ public class AllMusic implements ModInitializer {
         bufferBuilder.end();
         BufferRenderer.draw(bufferBuilder);
 
-        DrawableHelper.drawTexture(stack, x, y,
-                0, 0, 0, size, size, size, size);
+        //DrawableHelper.drawTexture(stack, x, y, 0, 0, 0, size, size, size, size);
     }
 
     public static void sendMessage(String data){
