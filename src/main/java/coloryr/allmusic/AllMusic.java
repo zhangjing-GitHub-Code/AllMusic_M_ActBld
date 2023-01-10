@@ -4,8 +4,6 @@ import coloryr.allmusic.hud.HudUtils;
 import coloryr.allmusic.player.APlayer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
@@ -28,6 +26,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Executors;
@@ -160,13 +160,16 @@ public class AllMusic {
         RenderSystem.setShaderTexture(0, textureID);
 
         PoseStack stack = new PoseStack();
-        Matrix4f matrix = stack.last().pose();
+        Matrix4f matrix = stack.last().m_252922_();
 
         int a = size / 2;
 
-        matrix.multiplyWithTranslation(x + a, y + a, 0);
         if(hudUtils.save.EnablePicRotate && hudUtils.thisRoute) {
-            matrix.multiply(new Quaternion(0, 0, ang, true));
+            matrix = matrix.translationRotate(x + a, y + a, 0,
+                    new Quaternionf().fromAxisAngleDeg(0,0,1, ang));
+        }
+        else {
+            matrix = matrix.translation(x + a, y + a, 0);
         }
         int x0 = -a;
         int x1 = a;
@@ -181,10 +184,10 @@ public class AllMusic {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
         bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.vertex(matrix, (float) x0, (float) y1, (float) z).uv(u0, v1).endVertex();
-        bufferBuilder.vertex(matrix, (float) x1, (float) y1, (float) z).uv(u1, v1).endVertex();
-        bufferBuilder.vertex(matrix, (float) x1, (float) y0, (float) z).uv(u1, v0).endVertex();
-        bufferBuilder.vertex(matrix, (float) x0, (float) y0, (float) z).uv(u0, v0).endVertex();
+        bufferBuilder.m_252986_(matrix, (float) x0, (float) y1, (float) z).uv(u0, v1).endVertex();
+        bufferBuilder.m_252986_(matrix, (float) x1, (float) y1, (float) z).uv(u1, v1).endVertex();
+        bufferBuilder.m_252986_(matrix, (float) x1, (float) y0, (float) z).uv(u1, v0).endVertex();
+        bufferBuilder.m_252986_(matrix, (float) x0, (float) y0, (float) z).uv(u0, v0).endVertex();
 
         BufferUploader.drawWithShader(bufferBuilder.end());
 
