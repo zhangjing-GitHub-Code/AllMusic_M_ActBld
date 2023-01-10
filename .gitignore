@@ -20,3 +20,6 @@ classes
 # other
 eclipse
 run
+logs
+
+workspace.xml
