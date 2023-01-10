@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "2.6.3"
+version = "2.6.5"
 group = "com.coloryr.allmusic" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "[forge-1.12.2]AllMusic"
 
@@ -59,7 +59,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2855'
+    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
 
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
