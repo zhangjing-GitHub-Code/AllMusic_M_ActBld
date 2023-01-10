@@ -1,0 +1,18 @@
+[
+  {
+    "modid": "allmusic",
+    "name": "AllMusic",
+    "description": "allmusic",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "Color_yr"
+    ],
+    "credits": "This mod is use in allmusic",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
