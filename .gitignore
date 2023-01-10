@@ -22,3 +22,6 @@ bin/
 # fabric
 
 run/
+logs
+
+workspace.xml
