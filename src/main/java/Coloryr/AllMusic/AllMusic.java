@@ -40,9 +40,7 @@ public class AllMusic {
 
     public static void sendMessage(String data) {
         FMLClientHandler.instance().getClient().func_152344_a(() -> {
-            if (FMLClientHandler.instance().getClient().thePlayer == null)
-                return;
-            FMLClientHandler.instance().getClient().thePlayer.sendChatMessage(data);
+            FMLClientHandler.instance().getClient().ingameGUI.getChatGUI().addToSentMessages(data);
         });
     }
 
@@ -158,7 +156,7 @@ public class AllMusic {
 
         GL11.glBindTexture(3553,textureID);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        GL11.glEnable(GL11.GL_ALPHA);
+        //GL11.glEnable(GL11.GL_ALPHA);
         GL11.glPushMatrix();
         GL11.glTranslatef((float) x + a, (float) y + a, 0.0f);
 
