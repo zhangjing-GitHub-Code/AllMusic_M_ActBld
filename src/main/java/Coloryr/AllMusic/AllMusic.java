@@ -12,9 +12,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.lwjgl.opengl.GL11;
 
 import java.nio.charset.StandardCharsets;
@@ -92,7 +91,7 @@ public class AllMusic implements ModInitializer {
     }
 
     public static void drawPic(int textureID, int size, int x, int y) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, textureID);
 
@@ -101,9 +100,13 @@ public class AllMusic implements ModInitializer {
 
         int a = size / 2;
 
-        matrix.multiplyByTranslation(x + a, y + a, 0);
+
         if(hudUtils.save.EnablePicRotate && hudUtils.thisRoute) {
-            matrix.multiply(new Quaternion(0, 0, ang, true));
+            matrix = matrix.translationRotate(x + a, y + a, 0,
+                    new Quaternionf().fromAxisAngleDeg(0,0,1, ang));
+        }
+        else {
+            matrix = matrix.translation(x + a, y + a, 0);
         }
         int x0 = -a;
         int x1 = a;
@@ -115,7 +118,7 @@ public class AllMusic implements ModInitializer {
         float v0 = 0;
         float v1 = 1;
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
         bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         bufferBuilder.vertex(matrix, (float) x0, (float) y1, (float) z).texture(u0, v1).next();
@@ -123,7 +126,9 @@ public class AllMusic implements ModInitializer {
         bufferBuilder.vertex(matrix, (float) x1, (float) y0, (float) z).texture(u1, v0).next();
         bufferBuilder.vertex(matrix, (float) x0, (float) y0, (float) z).texture(u0, v0).next();
 
-        BufferRenderer.drawWithShader(bufferBuilder.end());
+        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+
+//        DrawableHelper.drawTexture();
     }
 
     public static void sendMessage(String data) {
