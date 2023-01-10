@@ -10,14 +10,19 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Quaternion;
 import org.lwjgl.opengl.GL11;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class AllMusic implements ModInitializer {
     public static final Identifier ID = new Identifier("allmusic", "channel");
@@ -87,15 +92,40 @@ public class AllMusic implements ModInitializer {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, textureID);
-        DrawableHelper.drawTexture(stack, x, y,
-                0, 0, 0, size, size, size, size);
+
+        MatrixStack stack = new MatrixStack();
+        Matrix4f matrix = stack.peek().getModel();
+
+        int a = size / 2;
+
+        matrix.multiplyByTranslation(x + a, y + a, 0);
+        if(hudUtils.save.EnablePicRotate && hudUtils.thisRoute) {
+            matrix.multiply(new Quaternion(0, 0, ang, true));
+        }
+        int x0 = -a;
+        int x1 = a;
+        int y0 = -a;
+        int y1 = a;
+        int z = 0;
+        int u0 = 0;
+        float u1 = 1;
+        float v0 = 0;
+        float v1 = 1;
+
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+        bufferBuilder.vertex(matrix, (float) x0, (float) y1, (float) z).texture(u0, v1).next();
+        bufferBuilder.vertex(matrix, (float) x1, (float) y1, (float) z).texture(u1, v1).next();
+        bufferBuilder.vertex(matrix, (float) x1, (float) y0, (float) z).texture(u1, v0).next();
+        bufferBuilder.vertex(matrix, (float) x0, (float) y0, (float) z).texture(u0, v0).next();
+        bufferBuilder.end();
+        BufferRenderer.draw(bufferBuilder);
     }
 
     public static void sendMessage(String data){
         MinecraftClient.getInstance().execute(() -> {
-            if (MinecraftClient.getInstance().player == null)
-                return;
-            MinecraftClient.getInstance().player.sendChatMessage(data);
+            MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of(data));
         });
     }
 
