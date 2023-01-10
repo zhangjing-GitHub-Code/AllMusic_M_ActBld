@@ -4,7 +4,6 @@ import coloryr.allmusic.hud.HudUtils;
 import coloryr.allmusic.player.APlayer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SoundSource;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
@@ -25,15 +24,16 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.lwjgl.opengl.GL11;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 @Mod("allmusic")
 public class AllMusic {
     private static APlayer nowPlaying;
-    private static HudUtils HudUtils;
+    private static HudUtils hudUtils;
     private String url;
 
     private static int ang = 0;
@@ -58,7 +58,7 @@ public class AllMusic {
 
     private void setup1(final FMLLoadCompleteEvent event) {
         nowPlaying = new APlayer();
-        HudUtils = new HudUtils();
+        hudUtils = new HudUtils();
 
         service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(AllMusic::time1, 0, 1, TimeUnit.MILLISECONDS);
@@ -97,9 +97,9 @@ public class AllMusic {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-        HudUtils.Lyric = HudUtils.Info = HudUtils.List = "";
-        HudUtils.haveImg = false;
-        HudUtils.save = null;
+        hudUtils.Lyric = hudUtils.Info = hudUtils.List = "";
+        hudUtils.haveImg = false;
+        hudUtils.save = null;
     }
 
     private void onClicentPacket(final String message) {
@@ -113,20 +113,20 @@ public class AllMusic {
                 url = message.replace("[Play]", "");
                 nowPlaying.setMusic(url);
             } else if (message.startsWith("[Lyric]")) {
-                HudUtils.Lyric = message.substring(7);
+                hudUtils.Lyric = message.substring(7);
             } else if (message.startsWith("[Info]")) {
-                HudUtils.Info = message.substring(6);
+                hudUtils.Info = message.substring(6);
             } else if (message.startsWith("[Img]")) {
-                HudUtils.setImg(message.substring(5));
+                hudUtils.setImg(message.substring(5));
             } else if (message.startsWith("[Pos]")) {
                 nowPlaying.set(message.substring(5));
             } else if (message.startsWith("[List]")) {
-                HudUtils.List = message.substring(6);
+                hudUtils.List = message.substring(6);
             } else if (message.equalsIgnoreCase("[clear]")) {
-                HudUtils.Lyric = HudUtils.Info = HudUtils.List = "";
-                HudUtils.haveImg = false;
+                hudUtils.Lyric = hudUtils.Info = hudUtils.List = "";
+                hudUtils.haveImg = false;
             } else if (message.startsWith("{")) {
-                HudUtils.setPos(message);
+                hudUtils.setPos(message);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -136,7 +136,7 @@ public class AllMusic {
     @SubscribeEvent
     public void onRed(final RenderGameOverlayEvent.Post e) {
         if (e.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) {
-            HudUtils.update();
+            hudUtils.update();
         }
     }
 
@@ -150,9 +150,12 @@ public class AllMusic {
     }
 
     public static void drawPic(int textureID, int size, int x, int y) {
+        int a = size / 2;
+
         GlStateManager.bindTexture(textureID);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         GL11.glPushMatrix();
+        GL11.glRotatef(ang, 0, 0, 1f);
         GL11.glTranslatef((float) x, (float) y, 0.0f);
         GL11.glBegin(7);
         GL11.glTexCoord2f(0.0f, 0.0f);
@@ -178,7 +181,7 @@ public class AllMusic {
 
     private void stopPlaying() {
         nowPlaying.closePlayer();
-        HudUtils.close();
+        hudUtils.close();
     }
 
     private static void time1() {
@@ -199,9 +202,7 @@ public class AllMusic {
 
     public static void sendMessage(String data) {
         Minecraft.getInstance().execute(() -> {
-            if (Minecraft.getInstance().player == null)
-                return;
-            Minecraft.getInstance().player.sendChatMessage(data);
+            Minecraft.getInstance().ingameGUI.getChatGUI().addToSentMessages(data);
         });
     }
 }
