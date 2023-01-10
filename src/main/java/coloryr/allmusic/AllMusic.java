@@ -153,19 +153,29 @@ public class AllMusic {
         int a = size / 2;
 
         GlStateManager.bindTexture(textureID);
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        GlStateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
+        GlStateManager.enableAlphaTest();
         GL11.glPushMatrix();
-        GL11.glRotatef(ang, 0, 0, 1f);
-        GL11.glTranslatef((float) x, (float) y, 0.0f);
+        GL11.glTranslatef((float) x + a, (float) y + a, 0.0f);
+
+        if(hudUtils.save.EnablePicRotate && hudUtils.thisRoute) {
+            GL11.glRotatef(ang, 0, 0, 1f);
+        }
+
+        int x0 = -a;
+        int x1 = a;
+        int y0 = -a;
+        int y1 = a;
+
         GL11.glBegin(7);
         GL11.glTexCoord2f(0.0f, 0.0f);
-        GL11.glVertex3f(0.0f, 0.0f, 0.0f);
+        GL11.glVertex3f(x0, y0, 0.0f);
         GL11.glTexCoord2f(0.0f, 1.0f);
-        GL11.glVertex3f(0.0f, (float) size, 0.0f);
+        GL11.glVertex3f(x0, y1, 0.0f);
         GL11.glTexCoord2f(1.0f, 1.0f);
-        GL11.glVertex3f((float) size, (float) size, 0.0f);
+        GL11.glVertex3f(x1, y1, 0.0f);
         GL11.glTexCoord2f(1.0f, 0.0f);
-        GL11.glVertex3f((float) size, 0.0f, 0.0f);
+        GL11.glVertex3f(x1, y0, 0.0f);
         GL11.glEnd();
         GL11.glPopMatrix();
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
