@@ -6,14 +6,17 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SoundSource;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldVertexBufferUploader;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.sound.SoundEvent;
@@ -21,7 +24,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -31,16 +33,22 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.lwjgl.opengl.GL11;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 @Mod("allmusic")
 public class AllMusic {
     private static APlayer nowPlaying;
-    private HudUtils HudUtils;
+    private static HudUtils hudUtils;
     private String url;
+
+    private static int ang = 0;
+    private static int count = 0;
+
+    private static ScheduledExecutorService service;
 
     public AllMusic() {
 
@@ -60,7 +68,10 @@ public class AllMusic {
 
     private void setup1(final FMLLoadCompleteEvent event) {
         nowPlaying = new APlayer();
-        HudUtils = new HudUtils();
+        hudUtils = new HudUtils();
+
+        service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(AllMusic::time1, 0, 1, TimeUnit.MILLISECONDS);
     }
 
     private void enc(String str, PacketBuffer buffer) {
@@ -96,9 +107,9 @@ public class AllMusic {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-        HudUtils.Lyric = HudUtils.Info = HudUtils.List = "";
-        HudUtils.haveImg = false;
-        HudUtils.save = null;
+        hudUtils.Lyric = hudUtils.Info = hudUtils.List = "";
+        hudUtils.haveImg = false;
+        hudUtils.save = null;
     }
 
     private void onClicentPacket(final String message) {
@@ -112,20 +123,20 @@ public class AllMusic {
                 url = message.replace("[Play]", "");
                 nowPlaying.setMusic(url);
             } else if (message.startsWith("[Lyric]")) {
-                HudUtils.Lyric = message.substring(7);
+                hudUtils.Lyric = message.substring(7);
             } else if (message.startsWith("[Info]")) {
-                HudUtils.Info = message.substring(6);
+                hudUtils.Info = message.substring(6);
             } else if (message.startsWith("[Img]")) {
-                HudUtils.setImg(message.substring(5));
+                hudUtils.setImg(message.substring(5));
             } else if (message.startsWith("[Pos]")) {
                 nowPlaying.set(message.substring(5));
             } else if (message.startsWith("[List]")) {
-                HudUtils.List = message.substring(6);
+                hudUtils.List = message.substring(6);
             } else if (message.equalsIgnoreCase("[clear]")) {
-                HudUtils.Lyric = HudUtils.Info = HudUtils.List = "";
-                HudUtils.haveImg = false;
+                hudUtils.Lyric = hudUtils.Info = hudUtils.List = "";
+                hudUtils.haveImg = false;
             } else if (message.startsWith("{")) {
-                HudUtils.setPos(message);
+                hudUtils.setPos(message);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,7 +146,7 @@ public class AllMusic {
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent.Post e) {
         if (e.getType() == RenderGameOverlayEvent.ElementType.PORTAL) {
-            HudUtils.update();
+            hudUtils.update();
         }
     }
 
@@ -151,24 +162,36 @@ public class AllMusic {
     public static void drawPic(int textureID, int size, int x, int y) {
         GlStateManager._bindTexture(textureID);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float) x, (float) y, 0.0f);
-        GL11.glBegin(7);
-        GL11.glTexCoord2f(0.0f, 0.0f);
-        GL11.glVertex3f(0.0f, 0.0f, 0.0f);
-        GL11.glTexCoord2f(0.0f, 1.0f);
-        GL11.glVertex3f(0.0f, (float) size, 0.0f);
-        GL11.glTexCoord2f(1.0f, 1.0f);
-        GL11.glVertex3f((float) size, (float) size, 0.0f);
-        GL11.glTexCoord2f(1.0f, 0.0f);
-        GL11.glVertex3f((float) size, 0.0f, 0.0f);
-        GL11.glEnd();
-        GL11.glPopMatrix();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        MatrixStack stack = new MatrixStack();
+        Matrix4f matrix = stack.last().pose();
+
+        int a = size / 2;
+
+        matrix.setTranslation(x + a, y + a, 0);
+        if(hudUtils.save.EnablePicRotate && hudUtils.thisRoute) {
+            matrix.multiply(new Quaternion(0, 0, ang, true));
+        }
+
+        int x0 = -a;
+        int x1 = a;
+        int y0 = -a;
+        int y1 = a;
+        int z = 0;
+        int u0 = 0;
+        float u1 = 1;
+        float v0 = 0;
+        float v1 = 1;
+
+        BufferBuilder bufferbuilder = Tessellator.getInstance().getBuilder();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.vertex(matrix, (float) x0, (float) y1, (float) z).uv(u0, v1).endVertex();
+        bufferbuilder.vertex(matrix, (float) x1, (float) y1, (float) z).uv(u1, v1).endVertex();
+        bufferbuilder.vertex(matrix, (float) x1, (float) y0, (float) z).uv(u1, v0).endVertex();
+        bufferbuilder.vertex(matrix, (float) x0, (float) y0, (float) z).uv(u0, v0).endVertex();
+        bufferbuilder.end();
         RenderSystem.enableAlphaTest();
+        WorldVertexBufferUploader.end(bufferbuilder);
     }
 
     private static MatrixStack stack = new MatrixStack();
@@ -180,7 +203,19 @@ public class AllMusic {
 
     private void stopPlaying() {
         nowPlaying.closePlayer();
-        HudUtils.close();
+        hudUtils.close();
+    }
+
+    private static void time1() {
+        if (hudUtils.save == null)
+            return;
+        if (count < hudUtils.save.PicRotateSpeed) {
+            count++;
+            return;
+        }
+        count = 0;
+        ang++;
+        ang = ang % 360;
     }
 
     public static void runMain(Runnable runnable){
@@ -189,9 +224,7 @@ public class AllMusic {
 
     public static void sendMessage(String data) {
         Minecraft.getInstance().execute(() -> {
-            if (Minecraft.getInstance().player == null)
-                return;
-            Minecraft.getInstance().player.displayClientMessage(new StringTextComponent(data), false);
+            Minecraft.getInstance().gui.getChat().addMessage(new StringTextComponent(data));
         });
     }
 }
