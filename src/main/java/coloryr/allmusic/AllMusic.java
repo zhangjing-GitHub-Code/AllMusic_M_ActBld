@@ -217,9 +217,7 @@ public class AllMusic {
 
     public static void sendMessage(String data) {
         Minecraft.getInstance().execute(() -> {
-            if (Minecraft.getInstance().player == null)
-                return;
-            Minecraft.getInstance().player.displayClientMessage(Component.nullToEmpty(data), false);
+            Minecraft.getInstance().gui.getChat().addMessage(Component.nullToEmpty(data));
         });
     }
 }
