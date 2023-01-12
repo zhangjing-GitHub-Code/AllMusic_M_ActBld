@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
 public class QuitServer {
-    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("TAIL"))
+    @Inject(method = "disconnect()V", at = @At("TAIL"))
     public void Quit(CallbackInfo info) {
         AllMusic.onServerQuit();
     }
